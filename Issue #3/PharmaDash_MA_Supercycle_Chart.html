@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — The M&A Supercycle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1; --card:#FFFFFF; --panel:#0E141B; --ink:#101620;
+    --muted:#5C6775; --faint:#8A95A3; --hair:#DBE0E7;
+    --deal:#10916B; --deal-soft:#5FC79F; --proj:#2C7A5E; --gold:#D99A0B;
+    --amber:#B45309; --amber-bg:#FBF0DF; --amber-line:#E7C58C;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--deal);font-weight:600;
+    display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;
+    font-size:clamp(28px,4.6vw,46px);line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .em{background:linear-gradient(transparent 62%, rgba(16,145,107,.20) 62%);padding:0 2px;}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:64ch;margin:0;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 18px;}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;
+    padding:15px 15px 14px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--deal)}
+  .kpi.gold::before{background:var(--gold)}
+  .kpi .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--faint);margin-bottom:9px;min-height:24px;}
+  .kpi .val{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:29px;
+    line-height:1;letter-spacing:-.02em;color:var(--deal);display:flex;align-items:baseline;gap:5px}
+  .kpi.gold .val{color:var(--gold)}
+  .kpi .val .pct{font-size:14px;color:var(--deal)}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+
+  .panel{background:radial-gradient(900px 400px at 75% -15%, rgba(16,145,107,.12), transparent 60%),var(--panel);
+    border-radius:16px;padding:20px 18px 14px;color:#E7ECF3;position:relative;
+    box-shadow:0 18px 40px -28px rgba(8,14,24,.7);}
+  .panel-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:6px;}
+  .ptitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FB0C4;}
+  .ptitle b{color:#E7ECF3;font-weight:600}
+  .legend{display:flex;gap:16px;flex-wrap:wrap}
+  .lg{display:flex;align-items:center;gap:8px;font-size:12px;color:#C4D0DD}
+  .lg .sw{width:13px;height:13px;border-radius:3px}
+  .lg .sw.hatch{background:repeating-linear-gradient(45deg,var(--proj),var(--proj) 3px,transparent 3px,transparent 6px);border:1px solid var(--proj)}
+  .lg .ln{width:20px;height:0;border-top:2.5px solid var(--gold)}
+  svg.chart{width:100%;height:auto;display:block;overflow:visible}
+
+  .grid2{display:grid;grid-template-columns:.9fr 1.1fr;gap:14px;margin-top:14px}
+  .mini,.read{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 19px}
+  .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .blocktitle::before{content:"";width:14px;height:2px;background:var(--deal)}
+  svg.mini-svg{width:100%;height:auto;display:block}
+  .mini .cap{font-size:11px;color:var(--faint);margin-top:8px}
+  .read ul{margin:0;padding:0;list-style:none}
+  .read li{position:relative;padding:0 0 12px 20px;font-size:13.6px;color:#28323F}
+  .read li:last-child{padding-bottom:0}
+  .read li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;
+    background:var(--deal);transform:rotate(45deg);}
+  .read li b{color:var(--ink)}
+
+  footer{margin-top:18px;padding-top:15px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+  @media(max-width:780px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+  @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi .val{font-size:23px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">PharmaDash · M&amp;A Series · Issue 03</div>
+  <h1>Pharma's <span class="em">M&amp;A supercycle</span>, in one frame</h1>
+  <p class="dek">After a post-pandemic trough and a soft 2024, dealmaking has roared back. 2026 is on pace for the biggest year since 2019 — and the deals aren't just more frequent, they're bigger.</p>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lab">Booked so far · 2026</div>
+      <div class="val">$106B</div>
+      <div class="sub">across 201 deals (early June, PitchBook)</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">On track for</div>
+      <div class="val">~$250B</div>
+      <div class="sub">strongest year since the 2019 peak</div>
+    </div>
+    <div class="kpi gold">
+      <div class="lab">Average deal size</div>
+      <div class="val">$527M <span class="pct" style="color:var(--gold)">+44%</span></div>
+      <div class="sub">up from $365M in 2025</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Firepower remaining</div>
+      <div class="val">~$1.3T</div>
+      <div class="sub">Big Pharma deal capacity, mostly unspent</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-top">
+      <div class="ptitle"><b>Global biopharma M&amp;A deal value</b> &nbsp;·&nbsp; $ billions per year</div>
+      <div class="legend">
+        <span class="lg"><span class="sw" style="background:var(--deal)"></span> Booked</span>
+        <span class="lg"><span class="sw hatch"></span> 2026 projected</span>
+      </div>
+    </div>
+    <svg class="chart" id="chart" viewBox="0 0 920 430" role="img"
+      aria-label="Bar chart of global biopharma M&A deal value per year: about 86 billion in 2022, about 150 billion in 2023, 115 billion in 2024, 209 billion in 2025, and a projected 250 billion in 2026 of which 106 billion is already booked."></svg>
+  </div>
+
+  <div class="grid2">
+    <div class="mini">
+      <p class="blocktitle">Bigger, not just busier</p>
+      <svg class="mini-svg" id="mini" viewBox="0 0 360 200" aria-label="Average deal size rose from 365 million dollars in 2025 to 527 million dollars in 2026."></svg>
+      <p class="cap">Average deal value jumped 44% in a single year — buyers are reaching for larger, nearer-to-market assets.</p>
+    </div>
+    <div class="read">
+      <p class="blocktitle">Reading the cycle</p>
+      <ul>
+        <li><b>The trough was 2022.</b> Post-pandemic, dealmaking dried up as balance sheets and valuations reset.</li>
+        <li><b>2024 was a head-fake.</b> Tariff worries, FDA leadership churn and MFN-pricing uncertainty kept deals small and value muted at ~$115B.</li>
+        <li><b>2025 broke it open.</b> A friendlier FTC, Fed rate cuts and a recovering biotech market pushed value to ~$209B.</li>
+        <li><b>2026 is the breakout.</b> $106B booked by early June puts the year on a ~$250B trajectory — with ~$1.3T in firepower still in reserve.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Sources:</b> PitchBook via CNBC (June 2026) for 2024 ($114.8B), 2025 ($209B) and the 2026 projection (~$250B; $106B booked across 201 deals by early June) and average deal size ($365M → $527M). <b>Note:</b> 2022–2023 bars are approximate full-year totals drawn from comparable industry trackers and shown with a "~"; absolute figures for those years vary by data provider and methodology, so read them as directional. A 2026 total of $250B assumes the current pace holds.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ===== main bar chart ===== */
+  const svg=document.getElementById('chart');
+  const W=920,H=430,mL=58,mR=120,mT=34,mB=52;
+  const innerW=W-mL-mR, innerH=H-mT-mB;
+  const YMAX=260;
+  const yv=v=>mT+(1-v/YMAX)*innerH;
+  const years=[
+    {y:'2022', v:86, approx:true},
+    {y:'2023', v:150, approx:true},
+    {y:'2024', v:114.8, approx:false},
+    {y:'2025', v:209, approx:false},
+    {y:'2026', v:250, booked:106, proj:true}
+  ];
+  const n=years.length, slot=innerW/n, bw=Math.min(96, slot*0.56);
+
+  // gridlines
+  for(let g=0; g<=YMAX; g+=50){
+    const y=yv(g);
+    el('line',{x1:mL,y1:y,x2:mL+innerW,y2:y,stroke:'#1E2935','stroke-width':1},svg);
+    const t=el('text',{x:mL-10,y:y+4,'text-anchor':'end',fill:'#6F7E90','font-size':12,'font-family':'IBM Plex Mono, monospace'},svg);
+    t.textContent='$'+g+'B';
+  }
+
+  // hatch pattern for projection
+  const defs=el('defs',{},svg);
+  const pat=el('pattern',{id:'hatch',width:7,height:7,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);
+  el('rect',{width:7,height:7,fill:'#13231C'},pat);
+  el('line',{x1:0,y1:0,x2:0,y2:7,stroke:'#2C7A5E','stroke-width':3},pat);
+
+  years.forEach((d,i)=>{
+    const cx=mL+slot*i+slot/2, x=cx-bw/2, y0=yv(0);
+    const anim=(off)=>reduce?'':'transform-origin:'+cx+'px '+y0+'px;transform:scaleY(0);animation:grow .8s '+off+'s forwards cubic-bezier(.2,.7,.2,1)';
+    if(d.proj){
+      // projected full bar (hatched) behind
+      el('rect',{x:x,y:yv(d.v),width:bw,height:y0-yv(d.v),rx:4,fill:'url(#hatch)',stroke:'#2C7A5E','stroke-width':1.5,style:anim(i*0.1)},svg);
+      // booked portion (solid) front
+      el('rect',{x:x,y:yv(d.booked),width:bw,height:y0-yv(d.booked),rx:4,fill:'var(--deal)',style:anim(i*0.1+0.05)},svg);
+      // labels
+      const lt=el('text',{x:cx,y:yv(d.v)-22,'text-anchor':'middle',fill:'#7FE0BB','font-family':'Space Grotesk, sans-serif','font-weight':700,'font-size':19},svg);
+      lt.textContent='~$250B';
+      const lt2=el('text',{x:cx,y:yv(d.v)-7,'text-anchor':'middle',fill:'#8FA0B2','font-size':10.5,'font-family':'IBM Plex Mono, monospace'},svg);
+      lt2.textContent='projected';
+      const bk=el('text',{x:cx,y:yv(d.booked)+16,'text-anchor':'middle',fill:'#fff','font-size':11,'font-weight':600,'font-family':'IBM Plex Mono, monospace'},svg);
+      bk.textContent='$106B';
+    } else {
+      el('rect',{x:x,y:yv(d.v),width:bw,height:y0-yv(d.v),rx:4,fill:'var(--deal)','fill-opacity':d.approx?0.62:1,
+        stroke:d.approx?'var(--deal-soft)':'none','stroke-width':d.approx?1.4:0,'stroke-dasharray':d.approx?'4 3':'none',style:anim(i*0.1)},svg);
+      const lt=el('text',{x:cx,y:yv(d.v)-9,'text-anchor':'middle',fill:d.approx?'#7FBFA6':'#7FE0BB','font-family':'Space Grotesk, sans-serif','font-weight':700,'font-size':17},svg);
+      lt.textContent=(d.approx?'~$':'$')+(Number.isInteger(d.v)?d.v:d.v.toFixed(0))+'B';
+    }
+    // year label
+    const yt=el('text',{x:cx,y:H-mB+24,'text-anchor':'middle',fill:'#AEBED0','font-size':13,'font-weight':600,'font-family':'Space Grotesk, sans-serif'},svg);
+    yt.textContent=d.y;
+  });
+
+  // "2019 peak" reference line
+  const peakY=yv(204);
+  el('line',{x1:mL,y1:peakY,x2:mL+innerW,y2:peakY,stroke:'#5A6B7D','stroke-width':1.2,'stroke-dasharray':'5 4'},svg);
+  const pk=el('text',{x:mL+innerW+6,y:peakY+4,fill:'#8FA0B2','font-size':10.5,'font-family':'IBM Plex Mono, monospace'},svg);
+  pk.textContent='2019 peak';
+
+  /* ===== mini: average deal size ===== */
+  const ms=document.getElementById('mini');
+  const mW=360,mH=200,mml=44,mmb=34,mmt=18,mmr=14;
+  const miW=mW-mml-mmr, miH=mH-mmt-mmb;
+  const aMax=600;
+  const ay=v=>mmt+(1-v/aMax)*miH;
+  const adata=[{y:'2025',v:365},{y:'2026',v:527}];
+  const abw=70, aslot=miW/adata.length;
+  [0,200,400,600].forEach(g=>{
+    const y=ay(g);
+    el('line',{x1:mml,y1:y,x2:mml+miW,y2:y,stroke:'#E4E8ED','stroke-width':1},ms);
+    el('text',{x:mml-8,y:y+3,'text-anchor':'end',fill:'#9AA6B4','font-size':10,'font-family':'IBM Plex Mono, monospace'},ms).textContent='$'+g+'M';
+  });
+  adata.forEach((d,i)=>{
+    const cx=mml+aslot*i+aslot/2, x=cx-abw/2, y0=ay(0);
+    el('rect',{x:x,y:ay(d.v),width:abw,height:y0-ay(d.v),rx:4,fill:i===1?'var(--gold)':'#C9B27A',
+      style:reduce?'':'transform-origin:'+cx+'px '+y0+'px;transform:scaleY(0);animation:grow .7s '+(i*0.12)+'s forwards cubic-bezier(.2,.7,.2,1)'},ms);
+    el('text',{x:cx,y:ay(d.v)-7,'text-anchor':'middle',fill:i===1?'#B07F08':'#9A874E','font-family':'Space Grotesk, sans-serif','font-weight':700,'font-size':15},ms).textContent='$'+d.v+'M';
+    el('text',{x:cx,y:mH-mmb+20,'text-anchor':'middle',fill:'#5C6775','font-size':12,'font-weight':600},ms).textContent=d.y;
+  });
+  // +44% arrow annotation
+  const a1=ay(365),a2=ay(527),xc=mml+aslot*0.5, xc2=mml+aslot*1.5;
+  el('text',{x:(xc+xc2)/2,y:ay(560),'text-anchor':'middle',fill:'#B07F08','font-family':'Space Grotesk, sans-serif','font-weight':700,'font-size':14},ms).textContent='+44%';
+
+  if(!reduce){
+    const st=document.createElement('style');
+    st.textContent='@keyframes grow{to{transform:scaleY(1)}}';
+    document.head.appendChild(st);
+  }
+})();
+</script>
+</body>
+</html>

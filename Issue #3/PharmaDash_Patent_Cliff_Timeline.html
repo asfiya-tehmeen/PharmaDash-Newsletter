@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — The Patent Cliff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1; --card:#FFFFFF; --panel:#0E141B; --ink:#101620;
+    --muted:#5C6775; --faint:#8A95A3; --hair:#DBE0E7; --danger:#D8312A;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--danger);font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,4.6vw,46px);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .em{background:linear-gradient(transparent 62%, rgba(216,49,42,.18) 62%);padding:0 2px;}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:64ch;margin:0;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 18px;}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:15px 15px 14px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--danger)}
+  .kpi .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:9px;min-height:24px;}
+  .kpi .val{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:28px;line-height:1;letter-spacing:-.02em;color:var(--danger)}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+
+  .panel{background:radial-gradient(900px 420px at 78% -10%, rgba(216,49,42,.12), transparent 60%),var(--panel);
+    border-radius:16px;padding:20px 18px 14px;color:#E7ECF3;position:relative;box-shadow:0 18px 40px -28px rgba(8,14,24,.7);}
+  .panel-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:6px;}
+  .ptitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FB0C4;}
+  .ptitle b{color:#E7ECF3;font-weight:600}
+  .legend{display:flex;gap:13px;flex-wrap:wrap}
+  .lg{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#C4D0DD}
+  .lg .dot{width:11px;height:11px;border-radius:50%}
+  svg.chart{width:100%;height:auto;display:block;overflow:visible}
+
+  .read{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 19px;margin-top:14px}
+  .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 13px;display:flex;align-items:center;gap:8px;}
+  .blocktitle::before{content:"";width:14px;height:2px;background:var(--danger)}
+  .read ul{margin:0;padding:0;list-style:none;columns:2;column-gap:28px}
+  .read li{position:relative;padding:0 0 12px 20px;font-size:13.4px;color:#28323F;break-inside:avoid}
+  .read li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;background:var(--danger);transform:rotate(45deg);}
+  .read li b{color:var(--ink)}
+
+  footer{margin-top:18px;padding-top:15px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+  @media(max-width:780px){.kpis{grid-template-columns:repeat(2,1fr)}.read ul{columns:1}}
+  @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi .val{font-size:22px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">PharmaDash · M&amp;A Series · Issue 03</div>
+  <h1>The <span class="em">patent cliff</span> driving the buying spree</h1>
+  <p class="dek">Every acquisition traces back to this: a wall of blockbuster patent expirations between now and 2030. Bubble size shows each drug's annual revenue — and 2028 is where the ground gives way.</p>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lab">At risk by 2030</div>
+      <div class="val">$200–400B</div>
+      <div class="sub">branded revenue losing exclusivity, industry-wide</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Biggest single exposure</div>
+      <div class="val">$29.5B</div>
+      <div class="sub">Merck's Keytruda — core US patents expire 2028</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">The 2028 wall</div>
+      <div class="val">~$52B</div>
+      <div class="sub">Keytruda + Eliquis + Opdivo, all in one year</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Hardest hit</div>
+      <div class="val">~47%</div>
+      <div class="sub">of BMS revenue exposed to the cliff by 2030</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-top">
+      <div class="ptitle"><b>Blockbuster loss-of-exclusivity timeline</b> &nbsp;·&nbsp; US LOE year vs. annual revenue</div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <svg class="chart" id="chart" viewBox="0 0 920 470" role="img"
+      aria-label="Bubble timeline of major drugs losing US exclusivity from 2025 to 2029, positioned by year and annual revenue, with the largest cluster — Keytruda, Eliquis and Opdivo — concentrated in 2028."></svg>
+  </div>
+
+  <div class="read">
+    <p class="blocktitle">Why this is the engine of the M&amp;A supercycle</p>
+    <ul>
+      <li><b>2028 is the danger year.</b> Keytruda (~$29.5B), Eliquis (~$13B) and Opdivo (~$9B) all hit US exclusivity within months of each other — roughly $52B of revenue exposed at once.</li>
+      <li><b>This cliff is biologics, not pills.</b> Unlike the 2010s Lipitor era, the biggest names here are complex biologics where erosion is slower but the dollars are far larger.</li>
+      <li><b>You can't grow a $10B drug in 18 months.</b> So pharma buys one — which is exactly why dealmaking has surged in lockstep with the approaching cliff.</li>
+      <li><b>Merck and BMS are the motivated buyers.</b> With ~47–56% of revenue exposed, they have the most pipeline holes to fill before 2028.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Sources:</b> Company filings and DrugPatentWatch, DeepCeutix, BioSpace and labiotech analyses (2025–2026). Revenue figures are approximate recent-year annual sales (rounded); US loss-of-exclusivity years are estimates that depend on litigation, biosimilar entry and IRA timelines, and can shift. Eliquis and Opdivo are placed at 2028; some trackers cite a 2027–2029 window. Industry at-risk range of $200–400B reflects genuine uncertainty across providers.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const companies={
+    'Merck':'#E5223C','BMS':'#2563EB','J&J':'#8B5CF6',
+    'Pfizer':'#E0A100','Regeneron':'#06B6D4','Lilly':'#10916B','Amgen':'#94A3B8'
+  };
+  const drugs=[
+    {name:'Stelara', co:'J&J', rev:10.0, year:2025, area:'Immunology'},
+    {name:'Eylea', co:'Regeneron', rev:5.5, year:2026, area:'Ophthalmology'},
+    {name:'Prevnar', co:'Pfizer', rev:6.0, year:2026, area:'Vaccine'},
+    {name:'Xtandi', co:'Pfizer', rev:6.0, year:2027, area:'Oncology'},
+    {name:'Trulicity', co:'Lilly', rev:5.0, year:2027, area:'Diabetes'},
+    {name:'Ibrance', co:'Pfizer', rev:4.5, year:2027, area:'Oncology'},
+    {name:'Keytruda', co:'Merck', rev:29.5, year:2028, area:'Oncology'},
+    {name:'Eliquis', co:'BMS', rev:13.0, year:2028, area:'Cardiovascular'},
+    {name:'Opdivo', co:'BMS', rev:9.0, year:2028, area:'Oncology'},
+    {name:'Darzalex', co:'J&J', rev:12.0, year:2029, area:'Oncology'},
+    {name:'Enbrel', co:'Amgen', rev:3.3, year:2029, area:'Immunology'}
+  ];
+
+  // legend
+  const lg=document.getElementById('legend');
+  Object.keys(companies).forEach(c=>{
+    const s=document.createElement('span'); s.className='lg';
+    s.innerHTML='<span class="dot" style="background:'+companies[c]+'"></span>'+c;
+    lg.appendChild(s);
+  });
+
+  const svg=document.getElementById('chart');
+  const W=920,H=470,mL=58,mR=28,mT=40,mB=54;
+  const innerW=W-mL-mR, innerH=H-mT-mB;
+  const years=[2025,2026,2027,2028,2029];
+  const RMAX=32;
+  const yv=v=>mT+(1-v/RMAX)*innerH;
+  const xForYear=y=>mL+((y-2025)/(2029-2025))*innerW;
+  const rscale=v=>6.6*Math.sqrt(v);
+
+  // y gridlines
+  for(let g=0; g<=RMAX; g+=8){
+    const y=yv(g);
+    el('line',{x1:mL,y1:y,x2:mL+innerW,y2:y,stroke:'#1E2935','stroke-width':1},svg);
+    el('text',{x:mL-10,y:y+4,'text-anchor':'end',fill:'#6F7E90','font-size':12,'font-family':'IBM Plex Mono, monospace'},svg).textContent='$'+g+'B';
+  }
+  // x year labels + faint verticals
+  years.forEach(yr=>{
+    const x=xForYear(yr);
+    el('line',{x1:x,y1:mT-6,x2:x,y2:mT+innerH,stroke:yr===2028?'#5A2630':'#172230','stroke-width':yr===2028?2:1},svg);
+    el('text',{x:x,y:H-mB+26,'text-anchor':'middle',fill:yr===2028?'#F08A86':'#AEBED0','font-size':14,'font-weight':yr===2028?700:600,'font-family':'Space Grotesk, sans-serif'},svg).textContent=yr;
+  });
+  el('text',{x:mL,y:H-8,fill:'#6B7A8C','font-size':11,'letter-spacing':'.14em','font-family':'IBM Plex Mono, monospace'},svg).textContent='US LOSS OF EXCLUSIVITY →';
+
+  // 2028 "wall" highlight band
+  const bx=xForYear(2028);
+  el('text',{x:bx,y:mT-14,'text-anchor':'middle',fill:'#F08A86','font-size':11,'font-weight':700,'font-family':'IBM Plex Mono, monospace'},svg).textContent='THE 2028 WALL';
+
+  // jitter within same year by revenue ordering
+  const byYear={};
+  drugs.forEach(d=>{(byYear[d.year]=byYear[d.year]||[]).push(d);});
+  const nodes=[];
+  Object.keys(byYear).forEach(yr=>{
+    const arr=byYear[yr].sort((a,b)=>b.rev-a.rev);
+    arr.forEach((d,idx)=>{
+      // small horizontal offset so equal-revenue bubbles don't fully overlap
+      const off=(idx%2===0?1:-1)*Math.ceil(idx/2)*16;
+      nodes.push({...d, cx:xForYear(+yr)+off, cy:yv(d.rev), r:rscale(d.rev)});
+    });
+  });
+
+  nodes.forEach((d,i)=>{
+    const col=companies[d.co];
+    const g=el('g',{style:reduce?'':'opacity:0;animation:fade .5s '+(i*0.06+0.2)+'s forwards'},svg);
+    el('circle',{cx:d.cx,cy:d.cy,r:d.r,fill:col,'fill-opacity':0.22,stroke:col,'stroke-width':2},g);
+    el('circle',{cx:d.cx,cy:d.cy,r:3,fill:col},g);
+    // label
+    const lblY=d.cy - d.r - 6;
+    const t=el('text',{x:d.cx,y:lblY,'text-anchor':'middle',fill:'#EAF0F6','font-size':12.5,'font-weight':700,'font-family':'Space Grotesk, sans-serif'},g);
+    t.textContent=d.name;
+    const t2=el('text',{x:d.cx,y:lblY+13,'text-anchor':'middle',fill:'#9FB0C4','font-size':10.5,'font-family':'IBM Plex Mono, monospace'},g);
+    t2.textContent='$'+d.rev+'B';
+  });
+
+  if(!reduce){
+    const st=document.createElement('style');
+    st.textContent='@keyframes fade{to{opacity:1}}';
+    document.head.appendChild(st);
+  }
+})();
+</script>
+</body>
+</html>
