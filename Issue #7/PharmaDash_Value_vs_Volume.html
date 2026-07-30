@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — Value vs Volume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1; --card:#FFFFFF; --panel:#0B1017; --ink:#101620;
+    --muted:#5C6775; --faint:#8A95A3; --hair:#DBE0E7;
+    --money:#C6893F; --people:#2E9E8F; --amber:#B45309; --amber-bg:#FBF0DF; --amber-line:#E7C58C;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--people);font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,4.6vw,46px);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .m{color:var(--money)} h1 .p{color:var(--people)}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:66ch;margin:0;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 18px;}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:15px 15px 14px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--money)}
+  .kpi.p::before{background:var(--people)}
+  .kpi .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:9px;min-height:24px;}
+  .kpi .val{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:28px;line-height:1;letter-spacing:-.02em;color:var(--money)}
+  .kpi.p .val{color:var(--people)}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+
+  .panel{background:
+      radial-gradient(700px 380px at 22% -10%, rgba(198,137,63,.13), transparent 60%),
+      radial-gradient(700px 380px at 80% 110%, rgba(46,158,143,.13), transparent 60%),var(--panel);
+    border-radius:16px;padding:22px 20px 16px;color:#E7ECF3;box-shadow:0 18px 40px -28px rgba(8,14,24,.7);}
+  .panel-head{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FB0C4;margin-bottom:18px;text-align:center}
+  .panel-head b{color:#E7ECF3;font-weight:600}
+  svg.chart{width:100%;height:auto;display:block;overflow:visible}
+
+  .caveat{background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:14px;padding:18px 19px;margin-top:14px}
+  .caveat .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--amber);margin:0 0 11px;display:flex;align-items:center;gap:8px}
+  .caveat .blocktitle::before{content:"";width:14px;height:2px;background:var(--amber)}
+  .caveat p{margin:0;font-size:13.4px;color:#5C4416}
+  .caveat b{color:#3F2F0C}
+
+  .read{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 19px;margin-top:14px}
+  .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 13px;display:flex;align-items:center;gap:8px;}
+  .blocktitle::before{content:"";width:14px;height:2px;background:var(--people)}
+  .read ul{margin:0;padding:0;list-style:none;columns:2;column-gap:28px}
+  .read li{position:relative;padding:0 0 12px 20px;font-size:13.4px;color:#28323F;break-inside:avoid}
+  .read li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;background:var(--money);transform:rotate(45deg);}
+  .read li:nth-child(even)::before{background:var(--people)}
+  .read li b{color:var(--ink)}
+
+  footer{margin-top:18px;padding-top:15px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+  @media(max-width:780px){.kpis{grid-template-columns:repeat(2,1fr)}.read ul{columns:1}}
+  @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi .val{font-size:22px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">PharmaDash · Global Markets · Issue 07</div>
+  <h1>Where the <span class="m">money</span> is vs. where the <span class="p">patients</span> are</h1>
+  <p class="dek">The United States buys about half the world's medicine by value — but takes only about a fifth of its doses. That single inversion explains almost everything about how global pharma behaves.</p>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lab">US share of global spending</div>
+      <div class="val">~50%</div>
+      <div class="sub">by value · roughly half the world's drug dollars</div>
+    </div>
+    <div class="kpi p">
+      <div class="lab">US share of global volume</div>
+      <div class="val">~20%</div>
+      <div class="sub">of doses consumed</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">US share of world population</div>
+      <div class="val">~4%</div>
+      <div class="sub">~342M of ~8.2B people</div>
+    </div>
+    <div class="kpi p">
+      <div class="lab">Global doses by 2030</div>
+      <div class="val">~4T</div>
+      <div class="sub">defined daily doses · growth led by Asia &amp; LatAm</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><b>The same world, counted two ways</b> &nbsp;·&nbsp; share of global pharmaceutical market</div>
+    <svg class="chart" id="chart" viewBox="0 0 920 400" role="img"
+      aria-label="Two donut charts. By value, the United States is about 50 percent of the global pharmaceutical market and the rest of the world about 50 percent. By volume, the United States is about 20 percent and the rest of the world about 80 percent."></svg>
+  </div>
+
+  <div class="caveat">
+    <p class="blocktitle">Why this chart is US vs. rest of world</p>
+    <p>Region-by-region <b>volume</b> shares aren't published in comparable public sources — only spending shares are. Rather than estimate a six-region split we can't verify, this shows the one inversion that <i>is</i> well documented. The ~20% US volume figure is an estimate cited across industry analyses, not an audited statistic.</p>
+  </div>
+
+  <div class="read">
+    <p class="blocktitle">What the inversion means commercially</p>
+    <ul>
+      <li><b>Price, not usage, drives the gap.</b> Americans don't take dramatically more medicine — they pay far more per dose. US prices are set by market competition; most other countries regulate them.</li>
+      <li><b>Volume growth ≠ revenue growth.</b> A company can double patients treated in Indonesia and barely move its revenue line. A single US formulary win can change a quarter.</li>
+      <li><b>The US subsidises global R&amp;D.</b> Roughly half the world's drug spending funds the pipeline everyone else eventually uses — which is precisely what MFN pricing policy is designed to change.</li>
+      <li><b>Emerging markets are the long game.</b> They own the dose growth. The open question is whether value per patient ever converges toward volume.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Sources:</b> IQVIA Institute, <i>Global Medicine Use Trends 2026</i> (~4 trillion defined daily doses by 2030; growth led by Asia and Latin America); industry analyses citing the US at ~50% of global prescription spending by value versus roughly 20% of volume; UN population estimates. <b>Note:</b> "Value" is measured at list prices; US net prices are materially lower after rebates, which offset roughly 46% of invoice value — so the US spending share on a net basis is somewhat smaller than shown. Volume is measured in doses, not patients. Figures are rounded and directional.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const svg=document.getElementById('chart');
+
+  function donut(cx,cy,r,thick,usPct,color,title,sub,usLabel){
+    const g=el('g',{},svg);
+    const C=2*Math.PI*r;
+    // rest of world ring (background)
+    el('circle',{cx:cx,cy:cy,r:r,fill:'none',stroke:'#26313D','stroke-width':thick},g);
+    // US arc
+    const arc=el('circle',{cx:cx,cy:cy,r:r,fill:'none',stroke:color,'stroke-width':thick,
+      'stroke-dasharray':C,'stroke-dashoffset':C,'stroke-linecap':'butt',
+      transform:`rotate(-90 ${cx} ${cy})`},g);
+    const target=C*(1-usPct/100);
+    if(reduce){arc.setAttribute('stroke-dashoffset',target);}
+    else{arc.style.transition='stroke-dashoffset 1.2s cubic-bezier(.2,.7,.2,1)';
+      setTimeout(()=>arc.setAttribute('stroke-dashoffset',target),200);}
+    // centre text
+    el('text',{x:cx,y:cy-4,'text-anchor':'middle',fill:color,'font-size':44,'font-weight':700,
+      'font-family':'Space Grotesk, sans-serif','letter-spacing':'-0.02em'},g).textContent='~'+usPct+'%';
+    el('text',{x:cx,y:cy+20,'text-anchor':'middle',fill:'#9FB0C4','font-size':12,
+      'font-family':'IBM Plex Mono, monospace','letter-spacing':'.06em'},g).textContent=usLabel;
+    // title above
+    el('text',{x:cx,y:cy-r-38,'text-anchor':'middle',fill:'#E7ECF3','font-size':17,'font-weight':700,
+      'font-family':'Space Grotesk, sans-serif'},g).textContent=title;
+    el('text',{x:cx,y:cy-r-19,'text-anchor':'middle',fill:'#7E8D9E','font-size':11.5,
+      'font-family':'IBM Plex Mono, monospace'},g).textContent=sub;
+    // rest-of-world label below
+    el('text',{x:cx,y:cy+r+30,'text-anchor':'middle',fill:'#8A99AB','font-size':12.5},g)
+      .textContent='Rest of world ~'+(100-usPct)+'%';
+  }
+
+  donut(255,215,86,30,50,'#D69B4F','BY VALUE','dollars spent','UNITED STATES');
+  donut(665,215,86,30,20,'#3FBBA9','BY VOLUME','doses consumed','UNITED STATES');
+
+  // centre arrow + caption
+  const mx=460;
+  el('line',{x1:mx-40,y1:215,x2:mx+40,y2:215,stroke:'#39434F','stroke-width':1},svg);
+  el('path',{d:`M${mx+34} 209 L${mx+42} 215 L${mx+34} 221`,fill:'none',stroke:'#39434F','stroke-width':1.6},svg);
+  el('text',{x:mx,y:198,'text-anchor':'middle',fill:'#8A99AB','font-size':12,'font-weight':600,
+    'font-family':'IBM Plex Mono, monospace','letter-spacing':'.06em'},svg).textContent='THE';
+  el('text',{x:mx,y:245,'text-anchor':'middle',fill:'#C48B45','font-size':13,'font-weight':700,
+    'font-family':'Space Grotesk, sans-serif'},svg).textContent='INVERSION';
+  // 2.5x callout
+  el('text',{x:mx,y:330,'text-anchor':'middle',fill:'#9FB0C4','font-size':12.5,'font-family':'Inter, sans-serif'},svg)
+    .textContent='The US buys ~2.5\u00d7 more of the value than the volume';
+})();
+</script>
+</body>
+</html>

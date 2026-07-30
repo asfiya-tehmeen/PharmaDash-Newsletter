@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — The Market Strategy Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1; --card:#FFFFFF; --panel:#0B1017; --ink:#101620;
+    --muted:#5C6775; --faint:#8A95A3; --hair:#DBE0E7;
+    --dev:#C6893F; --emg:#2E9E8F; --gulf:#8B5CF6;
+    --amber:#B45309; --amber-bg:#FBF0DF; --amber-line:#E7C58C;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--emg);font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,4.6vw,46px);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .em{background:linear-gradient(transparent 62%, rgba(46,158,143,.22) 62%);padding:0 2px;}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:66ch;margin:0;}
+
+  .panel{background:radial-gradient(900px 420px at 80% -10%, rgba(46,158,143,.10), transparent 60%),var(--panel);
+    border-radius:16px;padding:20px 18px 14px;color:#E7ECF3;margin-top:26px;
+    box-shadow:0 18px 40px -28px rgba(8,14,24,.7);position:relative;}
+  .panel-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px;}
+  .ptitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FB0C4;}
+  .ptitle b{color:#E7ECF3;font-weight:600}
+  .legend{display:flex;gap:14px;flex-wrap:wrap}
+  .lg{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#C4D0DD}
+  .lg .dot{width:11px;height:11px;border-radius:50%}
+  .lg .ring{width:11px;height:11px;border-radius:50%;border:2px dashed #7E8D9E}
+  .chartbox{position:relative}
+  svg.chart{width:100%;height:auto;display:block;overflow:visible}
+  .tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-115%);
+    background:#fff;color:var(--ink);border-radius:9px;padding:9px 12px;font-size:12px;
+    box-shadow:0 10px 26px -10px rgba(0,0,0,.45);white-space:nowrap;transition:opacity .12s;z-index:5;border:1px solid #E5E9EF;}
+  .tip .t-n{font-weight:700;font-family:"Space Grotesk",sans-serif;margin-bottom:3px}
+  .tip .t-r{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#5C6775}
+  .tip .t-est{color:#B45309;font-size:10px;margin-top:3px;font-family:"IBM Plex Mono",monospace}
+
+  .quads{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+  .q{background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:14px 15px;position:relative;overflow:hidden}
+  .q::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .q.a::before{background:var(--gulf)} .q.b::before{background:var(--emg)}
+  .q.c::before{background:var(--dev)} .q.d::before{background:#94A3B8}
+  .q .qn{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+  .q .qt{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:15px;margin-bottom:5px}
+  .q.a .qt{color:var(--gulf)} .q.b .qt{color:var(--emg)} .q.c .qt{color:var(--dev)} .q.d .qt{color:#64748B}
+  .q p{margin:0;font-size:12px;color:#4A5563;line-height:1.45}
+
+  .caveat{background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:14px;padding:18px 19px;margin-top:14px}
+  .caveat .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--amber);margin:0 0 11px;display:flex;align-items:center;gap:8px}
+  .caveat .blocktitle::before{content:"";width:14px;height:2px;background:var(--amber)}
+  .caveat p{margin:0;font-size:13.2px;color:#5C4416}
+  .caveat b{color:#3F2F0C}
+
+  footer{margin-top:18px;padding-top:15px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+  @media(max-width:820px){.quads{grid-template-columns:1fr 1fr}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">PharmaDash · Global Markets · Issue 07</div>
+  <h1>A strategy map for the <span class="em">next billion patients</span></h1>
+  <p class="dek">Plot how much each market spends per person against how fast it's growing, and the world sorts itself into four very different commercial plays. Bubble size shows population — the prize nobody can price yet.</p>
+
+  <div class="panel">
+    <div class="panel-top">
+      <div class="ptitle"><b>Per-capita pharma spend vs. market growth</b> &nbsp;·&nbsp; bubble = population</div>
+      <div class="legend">
+        <span class="lg"><span class="dot" style="background:var(--dev)"></span> Developed</span>
+        <span class="lg"><span class="dot" style="background:var(--gulf)"></span> Gulf</span>
+        <span class="lg"><span class="dot" style="background:var(--emg)"></span> Emerging</span>
+        <span class="lg"><span class="ring"></span> derived estimate</span>
+      </div>
+    </div>
+    <div class="chartbox">
+      <svg class="chart" id="chart" viewBox="0 0 920 520" role="img"
+        aria-label="Quadrant chart of pharmaceutical markets. The US and Germany sit high on per-capita spend with moderate growth. The UAE and Saudi Arabia sit in the high-spend, high-growth quadrant. India, Indonesia and Brazil sit low on spend but high on growth, with very large populations."></svg>
+      <div class="tip" id="tip"></div>
+    </div>
+  </div>
+
+  <div class="quads">
+    <div class="q a">
+      <div class="qn">Top right</div>
+      <div class="qt">Premium growth</div>
+      <p>High spend <i>and</i> fast growth. The Gulf: small populations, deep pockets, severe diabetes burden. Margin markets, not volume markets.</p>
+    </div>
+    <div class="q b">
+      <div class="qn">Bottom right</div>
+      <div class="qt">The volume prize</div>
+      <p>Low spend per head, fast growth, enormous populations. India, Indonesia, Brazil. Where patients are — and where margins are thinnest.</p>
+    </div>
+    <div class="q c">
+      <div class="qn">Top left</div>
+      <div class="qt">The cash engine</div>
+      <p>Highest spend per person, slower growth. The US still adds more absolute growth than the rest of the world combined.</p>
+    </div>
+    <div class="q d">
+      <div class="qn">Bottom left</div>
+      <div class="qt">Stagnant</div>
+      <p>Low spend, low growth. Few large markets sit here — but price-controlled, ageing markets like Japan drift toward it.</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <p class="blocktitle">Read the estimates honestly</p>
+    <p>OECD publishes per-capita pharma spend for developed economies. For India, Indonesia, Brazil, Saudi Arabia and the UAE it does not — so those points are <b>PharmaDash estimates, derived as national market size ÷ population</b>, and are drawn with dashed outlines. They are directional, not audited. Growth rates blend IQVIA (US, global) with commercial research firms (emerging markets), whose figures run higher and are not measured identically. Hover any bubble to see its inputs.</p>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Sources:</b> OECD/Statista pharmaceutical spending per capita (Canada $871, Korea $818 in 2024; Germany ~$1,042 in 2022); IQVIA Institute <i>Global Medicine Use Trends 2026</i> (US net price growth 4–7% CAGR to 2030; global 5–8%); Grand View Research (India 8.1% CAGR 2026–33; Asia-Pacific 7.06%; global 6.1%); Coherent Market Insights and PharmaKnowl (Gulf market shares, UAE fastest-growing in MEA); UN population estimates. Per-capita values for emerging markets are PharmaDash calculations from published market size and population. Growth is nominal CAGR at list prices unless noted; US shown on a net-price basis.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const svg=document.getElementById('chart');
+
+  const W=920,H=520,mL=76,mR=40,mT=34,mB=64;
+  const iW=W-mL-mR, iH=H-mT-mB;
+
+  // x = growth CAGR %, y = per-capita spend (log)
+  const XMIN=3, XMAX=13;
+  const YMIN=20, YMAX=2000;   // log
+  const xv=v=>mL+((v-XMIN)/(XMAX-XMIN))*iW;
+  const lg=v=>Math.log10(v);
+  const yv=v=>mT+(1-(lg(v)-lg(YMIN))/(lg(YMAX)-lg(YMIN)))*iH;
+
+  const XMID=7, YMID=250;   // quadrant dividers
+
+  const markets=[
+    // developed (OECD-published)
+    {n:'United States', x:5.5, y:1500, pop:342, grp:'dev', est:false, note:'net-price growth 4\u20137% (IQVIA)'},
+    {n:'Germany', x:5.0, y:1042, pop:84, grp:'dev', est:false, note:'OECD, 2022'},
+    {n:'Canada', x:4.5, y:871, pop:41, grp:'dev', est:false, note:'OECD, 2024'},
+    {n:'South Korea', x:5.5, y:818, pop:52, grp:'dev', est:false, note:'OECD, 2024'},
+    {n:'Japan', x:3.5, y:700, pop:123, grp:'dev', est:false, note:'mature, price-controlled'},
+    // gulf (derived)
+    {n:'UAE', x:10.5, y:610, pop:11, grp:'gulf', est:true, note:'~$6.7B by 2030 \u00f7 11M'},
+    {n:'Saudi Arabia', x:8.5, y:300, pop:34, grp:'gulf', est:true, note:'market \u00f7 population'},
+    // emerging (derived)
+    {n:'Brazil', x:9.8, y:130, pop:213, grp:'emg', est:true, note:'LatAm CAGR ~9.8%'},
+    {n:'China', x:7.5, y:120, pop:1410, grp:'emg', est:true, note:'fastest usage growth since 2020'},
+    {n:'Indonesia', x:12.1, y:45, pop:283, grp:'emg', est:true, note:'SE Asia CAGR ~12.1%'},
+    {n:'India', x:8.1, y:30, pop:1450, grp:'emg', est:true, note:'~2.5% of global market \u00f7 1.45B'}
+  ];
+  const COL={dev:'#D69B4F', gulf:'#A78BFA', emg:'#3FBBA9'};
+
+  /* quadrant tints */
+  const qx=xv(XMID), qy=yv(YMID);
+  el('rect',{x:qx,y:mT,width:mL+iW-qx,height:qy-mT,fill:'#A78BFA','fill-opacity':.05},svg);       // TR
+  el('rect',{x:qx,y:qy,width:mL+iW-qx,height:mT+iH-qy,fill:'#3FBBA9','fill-opacity':.05},svg);    // BR
+  el('rect',{x:mL,y:mT,width:qx-mL,height:qy-mT,fill:'#D69B4F','fill-opacity':.05},svg);          // TL
+
+  /* gridlines */
+  [50,100,250,500,1000,2000].forEach(v=>{
+    const y=yv(v);
+    el('line',{x1:mL,y1:y,x2:mL+iW,y2:y,stroke:'#1A222C','stroke-width':1},svg);
+    el('text',{x:mL-10,y:y+4,'text-anchor':'end',fill:'#6F7E90','font-size':11.5,'font-family':'IBM Plex Mono, monospace'},svg).textContent='$'+v;
+  });
+  for(let g=4;g<=12;g+=2){
+    const x=xv(g);
+    el('line',{x1:x,y1:mT,x2:x,y2:mT+iH,stroke:'#141C25','stroke-width':1},svg);
+    el('text',{x:x,y:H-mB+24,'text-anchor':'middle',fill:'#6F7E90','font-size':11.5,'font-family':'IBM Plex Mono, monospace'},svg).textContent=g+'%';
+  }
+
+  /* quadrant dividers */
+  el('line',{x1:qx,y1:mT,x2:qx,y2:mT+iH,stroke:'#3B4756','stroke-width':1.4,'stroke-dasharray':'5 5'},svg);
+  el('line',{x1:mL,y1:qy,x2:mL+iW,y2:qy,stroke:'#3B4756','stroke-width':1.4,'stroke-dasharray':'5 5'},svg);
+
+  /* quadrant labels */
+  const ql=(x,y,t,c,anc)=>el('text',{x:x,y:y,'text-anchor':anc,fill:c,'font-size':11,'font-weight':700,
+    'letter-spacing':'.1em','font-family':'IBM Plex Mono, monospace','opacity':.85},svg).textContent=t;
+  ql(mL+10, mT+18,'THE CASH ENGINE','#C6893F','start');
+  ql(mL+iW-6, mT+18,'PREMIUM GROWTH','#A78BFA','end');
+  ql(mL+iW-6, mT+iH-10,'THE VOLUME PRIZE','#3FBBA9','end');
+  ql(mL+10, mT+iH-10,'STAGNANT','#7E8D9E','start');
+
+  /* axis titles */
+  el('text',{x:mL+iW/2,y:H-8,'text-anchor':'middle',fill:'#7E8D9E','font-size':11,'letter-spacing':'.14em','font-family':'IBM Plex Mono, monospace'},svg).textContent='MARKET GROWTH (CAGR) \u2192';
+  const yt=el('text',{x:18,y:mT+iH/2,'text-anchor':'middle',fill:'#7E8D9E','font-size':11,'letter-spacing':'.14em','font-family':'IBM Plex Mono, monospace'},svg);
+  yt.setAttribute('transform',`rotate(-90 18 ${mT+iH/2})`);
+  yt.textContent='SPEND PER PERSON (LOG) \u2192';
+
+  /* bubbles */
+  const rs=p=>Math.max(7, 3.2*Math.sqrt(p));
+  const tip=document.getElementById('tip'), box=document.querySelector('.chartbox');
+  markets.forEach((m,i)=>{
+    const cx=xv(m.x), cy=yv(m.y), r=Math.min(rs(m.pop),52), col=COL[m.grp];
+    const g=el('g',{style:reduce?'':`opacity:0;animation:pop .5s ${0.15+i*0.06}s forwards`},svg);
+    el('circle',{cx:cx,cy:cy,r:r,fill:col,'fill-opacity':0.17,stroke:col,'stroke-width':2,
+      'stroke-dasharray':m.est?'4 3':'none'},g);
+    el('circle',{cx:cx,cy:cy,r:3.2,fill:col},g);
+    // label placement
+    const big=r>26;
+    const ly=big?cy+4:cy-r-8;
+    const t=el('text',{x:cx,y:ly,'text-anchor':'middle',fill:big?'#EAF0F6':'#D5DEE8',
+      'font-size':big?12.5:12,'font-weight':700,'font-family':'Space Grotesk, sans-serif'},g);
+    t.textContent=m.n;
+    // hover
+    const hit=el('circle',{cx:cx,cy:cy,r:Math.max(r,16),fill:'transparent',style:'cursor:pointer'},svg);
+    hit.addEventListener('mouseenter',()=>show(hit,m,col));
+    hit.addEventListener('mousemove',()=>show(hit,m,col));
+    hit.addEventListener('mouseleave',()=>tip.style.opacity=0);
+  });
+  function show(node,m,col){
+    const r=node.getBoundingClientRect(), b=box.getBoundingClientRect();
+    tip.innerHTML='<div class="t-n" style="color:'+col+'">'+m.n+'</div>'+
+      '<div class="t-r">~$'+m.y.toLocaleString()+'/person · '+m.x+'% CAGR · '+m.pop+'M people</div>'+
+      '<div class="t-r" style="margin-top:2px">'+m.note+'</div>'+
+      (m.est?'<div class="t-est">◇ derived estimate</div>':'');
+    tip.style.left=(r.left-b.left+r.width/2)+'px';
+    tip.style.top=(r.top-b.top)+'px';
+    tip.style.opacity=1;
+  }
+
+  if(!reduce){const st=document.createElement('style');
+    st.textContent='@keyframes pop{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}';
+    document.head.appendChild(st);}
+})();
+</script>
+</body>
+</html>
