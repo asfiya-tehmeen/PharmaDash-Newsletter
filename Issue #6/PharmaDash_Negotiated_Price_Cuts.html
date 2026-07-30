@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — Medicare's Price Cuts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1; --card:#FFFFFF; --panel:#0C1118; --ink:#101620;
+    --muted:#5C6775; --faint:#8A95A3; --hair:#DBE0E7;
+    --before:#8794A6; --after:#1C8C6A; --accent:#1C8C6A; --gold:#E0A100;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,4.6vw,46px);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .em{background:linear-gradient(transparent 62%, rgba(28,140,106,.20) 62%);padding:0 2px;}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:66ch;margin:0;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 18px;}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:15px 15px 14px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+  .kpi.gd::before{background:var(--gold)}
+  .kpi .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:9px;min-height:24px;}
+  .kpi .val{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:28px;line-height:1;letter-spacing:-.02em;color:var(--accent)}
+  .kpi.gd .val{color:var(--gold)}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+
+  .panel{background:radial-gradient(900px 420px at 80% -10%, rgba(28,140,106,.13), transparent 60%),var(--panel);
+    border-radius:16px;padding:20px 20px 16px;color:#E7ECF3;position:relative;box-shadow:0 18px 40px -28px rgba(8,14,24,.7);}
+  .panel-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+  .ptitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FB0C4;}
+  .ptitle b{color:#E7ECF3;font-weight:600}
+  .legend{display:flex;gap:16px;flex-wrap:wrap}
+  .lg{display:flex;align-items:center;gap:8px;font-size:12px;color:#C4D0DD}
+  .lg .sw{width:13px;height:13px;border-radius:3px}
+
+  .rows{display:flex;flex-direction:column;gap:0}
+  .row{display:grid;grid-template-columns:150px 1fr 66px;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #182230}
+  .row:last-child{border-bottom:none}
+  .rlabel .dn{font-weight:600;font-size:13.5px;color:#EAF0F6;font-family:"Space Grotesk",sans-serif}
+  .rlabel .co{font-size:10px;color:#8696A8;font-family:"IBM Plex Mono",monospace;margin-top:1px}
+  .track{position:relative;height:30px}
+  .bar{position:absolute;top:50%;transform:translateY(-50%);height:22px;border-radius:5px;display:flex;align-items:center;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+  .bar.before{background:#39434F;opacity:.85;z-index:1}
+  .bar.after{background:var(--after);z-index:2;box-shadow:0 0 0 1px rgba(255,255,255,.06)}
+  .bar .pv{font-size:10.5px;font-family:"IBM Plex Mono",monospace;padding:0 7px;white-space:nowrap;font-weight:600}
+  .bar.before .pv{color:#C4CEDA;position:absolute;right:-2px;transform:translateX(100%);padding-left:8px}
+  .bar.after .pv{color:#fff}
+  .cut{text-align:right;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:15px;color:#3FD6A6}
+
+  .axisnote{font-size:10.5px;color:#8696A8;font-family:"IBM Plex Mono",monospace;margin-top:10px;text-align:right}
+
+  .read{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 19px;margin-top:14px}
+  .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 13px;display:flex;align-items:center;gap:8px;}
+  .blocktitle::before{content:"";width:14px;height:2px;background:var(--accent)}
+  .read ul{margin:0;padding:0;list-style:none;columns:2;column-gap:28px}
+  .read li{position:relative;padding:0 0 12px 20px;font-size:13.4px;color:#28323F;break-inside:avoid}
+  .read li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;background:var(--accent);transform:rotate(45deg);}
+  .read li b{color:var(--ink)}
+
+  footer{margin-top:18px;padding-top:15px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+  @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}.read ul{columns:1}
+    .row{grid-template-columns:110px 1fr 52px}.rlabel .dn{font-size:12px}}
+  @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi .val{font-size:22px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">PharmaDash · Pricing Series · Issue 06</div>
+  <h1>What Medicare just <span class="em">knocked off</span> drug prices</h1>
+  <p class="dek">The first 10 drugs Medicare negotiated under the IRA, now in effect. List price versus the new "Maximum Fair Price" — sorted by how deep the cut goes. These are official CMS numbers, per 30-day supply.</p>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lab">Deepest cut</div>
+      <div class="val">79%</div>
+      <div class="sub">Januvia — $527 → $113 a month</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Biggest by Medicare spend</div>
+      <div class="val">Eliquis</div>
+      <div class="sub">$18.3B/yr — cut 56%, $521 → $231</div>
+    </div>
+    <div class="kpi gd">
+      <div class="lab">These 10 drugs' Part D cost</div>
+      <div class="val">$56B</div>
+      <div class="sub">~20% of all Part D spending (2023)</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Est. first-year saving</div>
+      <div class="val">$6B</div>
+      <div class="sub">to Medicare, had prices applied in 2023</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-top">
+      <div class="ptitle"><b>List price vs. negotiated price</b> &nbsp;·&nbsp; per 30-day supply · effective Jan 2026</div>
+      <div class="legend">
+        <span class="lg"><span class="sw" style="background:#39434F"></span> 2023 list price</span>
+        <span class="lg"><span class="sw" style="background:var(--after)"></span> Negotiated (MFP)</span>
+      </div>
+    </div>
+    <div class="rows" id="rows"></div>
+    <div class="axisnote">bar length = price on a shared log scale (prices span $113 to $14,934)</div>
+  </div>
+
+  <div class="read">
+    <p class="blocktitle">What the cuts reveal</p>
+    <ul>
+      <li><b>The percentages are steep across the board</b> — from 38% off Imbruvica to 79% off Januvia. Every one of the 10 was cut by at least a third.</li>
+      <li><b>The dollar stakes are enormous for a few.</b> Eliquis alone drove $18.3B in annual Part D spend; a 56% cut on that base is where the real money moves.</li>
+      <li><b>Specialty biologics fall hardest in absolute terms.</b> Stelara dropped $9,141 a month ($13,836 → $4,695), Imbruvica $5,615 — huge per-patient swings.</li>
+      <li><b>This is round one of many.</b> Round 2 (15 drugs, incl. Ozempic/Wegovy) lands in 2027 at ~52% average; round 3 follows in 2028. The list compounds.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Source:</b> CMS, "Medicare Drug Price Negotiation Program: Negotiated Prices for Initial Price Applicability Year 2026" (fact sheet, Aug 2024). Prices are per 30-day supply; list price is the 2023 Wholesale Acquisition Cost (WAC); negotiated price is the Maximum Fair Price (MFP) effective Jan 1, 2026. Spend figures are total Part D gross covered costs, CY 2023. Actual out-of-pocket cost to any individual depends on their plan; the $2,000 (now $2,100) Part D cap applies separately.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Exact CMS figures (30-day supply)
+  const data=[
+    {drug:'Januvia', co:'Merck', list:527, mfp:113, cut:79, spend:'$4.1B'},
+    {drug:'NovoLog/Fiasp', co:'Novo Nordisk', list:495, mfp:119, cut:76, spend:'$2.6B'},
+    {drug:'Farxiga', co:'AstraZeneca', list:556, mfp:178.50, cut:68, spend:'$4.3B'},
+    {drug:'Enbrel', co:'Amgen', list:7106, mfp:2355, cut:67, spend:'$3.0B'},
+    {drug:'Jardiance', co:'Boehringer Ing.', list:573, mfp:197, cut:66, spend:'$8.8B'},
+    {drug:'Stelara', co:'J&J (Janssen)', list:13836, mfp:4695, cut:66, spend:'$3.0B'},
+    {drug:'Xarelto', co:'J&J (Janssen)', list:517, mfp:197, cut:62, spend:'$6.3B'},
+    {drug:'Eliquis', co:'Bristol Myers Squibb', list:521, mfp:231, cut:56, spend:'$18.3B'},
+    {drug:'Entresto', co:'Novartis', list:628, mfp:295, cut:53, spend:'$3.4B'},
+    {drug:'Imbruvica', co:'AbbVie/J&J', list:14934, mfp:9319, cut:38, spend:'$2.4B'}
+  ];
+  // log scale across all prices
+  const allMax=15000, lo=100;
+  const L=v=>Math.log10(Math.max(v,lo));
+  const minL=L(lo), maxL=L(allMax);
+  const pct=v=>((L(v)-minL)/(maxL-minL))*100;
+
+  const rows=document.getElementById('rows');
+  const fmt=v=>'$'+v.toLocaleString(undefined,{maximumFractionDigits:0});
+  data.forEach((d,i)=>{
+    const row=document.createElement('div'); row.className='row';
+    row.innerHTML=
+      '<div class="rlabel"><div class="dn">'+d.drug+'</div><div class="co">'+d.co+' · '+d.spend+'/yr</div></div>'+
+      '<div class="track">'+
+        '<div class="bar before" style="width:0"><span class="pv">'+fmt(d.list)+'</span></div>'+
+        '<div class="bar after" style="width:0"><span class="pv">'+fmt(d.mfp)+'</span></div>'+
+      '</div>'+
+      '<div class="cut">\u2013'+d.cut+'%</div>';
+    rows.appendChild(row);
+    const before=row.querySelector('.bar.before'), after=row.querySelector('.bar.after');
+    const wB=pct(d.list), wA=pct(d.mfp);
+    if(reduce){before.style.width=wB+'%';after.style.width=wA+'%';}
+    else{
+      setTimeout(()=>{before.style.width=wB+'%';after.style.width=wA+'%';}, 150+i*70);
+    }
+  });
+})();
+</script>
+</body>
+</html>
