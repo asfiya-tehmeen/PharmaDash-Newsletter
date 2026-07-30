@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — The Pharma–AI Web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1; --card:#FFFFFF; --panel:#0B131A; --ink:#101620;
+    --muted:#5C6775; --faint:#8A95A3; --hair:#DBE0E7;
+    --ai:#0CB5C4; --pharma:#5B8DEF; --gold:#E0A100;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ai);font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,4.6vw,46px);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .em{background:linear-gradient(transparent 62%, rgba(12,181,196,.22) 62%);padding:0 2px;}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:64ch;margin:0;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 18px;}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:15px 15px 14px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ai)}
+  .kpi.ph::before{background:var(--pharma)} .kpi.gd::before{background:var(--gold)}
+  .kpi .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:9px;min-height:24px;}
+  .kpi .val{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:26px;line-height:1.05;letter-spacing:-.02em;color:var(--ink)}
+  .kpi.ai .val{color:var(--ai)} .kpi.ph .val{color:var(--pharma)} .kpi.gd .val{color:var(--gold)}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+
+  .panel{background:radial-gradient(700px 380px at 25% -10%, rgba(91,141,239,.12), transparent 60%),
+      radial-gradient(700px 380px at 80% 110%, rgba(12,181,196,.12), transparent 60%),var(--panel);
+    border-radius:16px;padding:18px 16px 14px;color:#E7ECF3;position:relative;box-shadow:0 18px 40px -28px rgba(8,14,24,.7);}
+  .panel-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:2px;padding:0 6px;}
+  .ptitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FB0C4;}
+  .ptitle b{color:#E7ECF3;font-weight:600}
+  .legend{display:flex;gap:15px;flex-wrap:wrap}
+  .lg{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#C4D0DD}
+  .lg .dot{width:12px;height:12px;border-radius:50%}
+  svg.chart{width:100%;height:auto;display:block;overflow:visible}
+
+  .read{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 19px;margin-top:14px}
+  .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 13px;display:flex;align-items:center;gap:8px;}
+  .blocktitle::before{content:"";width:14px;height:2px;background:var(--ai)}
+  .read ul{margin:0;padding:0;list-style:none;columns:2;column-gap:28px}
+  .read li{position:relative;padding:0 0 12px 20px;font-size:13.4px;color:#28323F;break-inside:avoid}
+  .read li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;background:var(--ai);transform:rotate(45deg);}
+  .read li:nth-child(even)::before{background:var(--pharma)}
+  .read li b{color:var(--ink)}
+
+  footer{margin-top:18px;padding-top:15px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+  @media(max-width:780px){.kpis{grid-template-columns:repeat(2,1fr)}.read ul{columns:1}}
+  @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi .val{font-size:21px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">PharmaDash · AI Series · Issue 04</div>
+  <h1>The web tying pharma to <span class="em">AI</span></h1>
+  <p class="dek">Major drugmakers (left) and the AI platforms they've partnered with (right). Node size shows how many partnerships each player holds — and the network already clusters tightly around a few hubs.</p>
+
+  <div class="kpis">
+    <div class="kpi ph">
+      <div class="lab">Most-connected drugmaker</div>
+      <div class="val">Eli Lilly</div>
+      <div class="sub">3 partnerships shown — NVIDIA, Chai, Isomorphic</div>
+    </div>
+    <div class="kpi ai">
+      <div class="lab">Busiest AI hub</div>
+      <div class="val">Isomorphic Labs</div>
+      <div class="sub">3 pharma partners — Lilly, J&amp;J, Novartis</div>
+    </div>
+    <div class="kpi gd">
+      <div class="lab">Largest disclosed deal</div>
+      <div class="val">$1B</div>
+      <div class="sub">Lilly + NVIDIA co-innovation lab, over 5 years</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">$1B+ partnerships</div>
+      <div class="val">2</div>
+      <div class="sub">Lilly–NVIDIA &amp; Novartis–Generate:Biomedicines</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-top">
+      <div class="ptitle"><b>Major pharma–AI partnerships</b> &nbsp;·&nbsp; node size = number of partnerships</div>
+      <div class="legend">
+        <span class="lg"><span class="dot" style="background:var(--pharma)"></span> Drugmaker</span>
+        <span class="lg"><span class="dot" style="background:var(--ai)"></span> AI platform / infra</span>
+        <span class="lg"><span class="dot" style="background:var(--gold)"></span> $1B+ deal</span>
+      </div>
+    </div>
+    <svg class="chart" id="chart" viewBox="0 0 920 520" role="img"
+      aria-label="Network map linking drugmakers to AI platforms. Eli Lilly and Isomorphic Labs are the largest hubs, each with three partnerships."></svg>
+  </div>
+
+  <div class="read">
+    <p class="blocktitle">What the map shows</p>
+    <ul>
+      <li><b>Two hubs anchor the network.</b> Eli Lilly (3 AI partners) and Isomorphic Labs (3 pharma partners) are the most connected nodes — the gravity centers of the pharma–AI web.</li>
+      <li><b>Isomorphic is the connector.</b> The Google DeepMind spinout links Lilly, J&amp;J and Novartis, making one AI platform a shared dependency across rival drugmakers.</li>
+      <li><b>NVIDIA is the infrastructure layer.</b> Its deals with Lilly and Amgen are about compute and platforms, not single molecules — the "picks and shovels" of the AI gold rush.</li>
+      <li><b>The big checks are rare and disclosed.</b> Only two partnerships here carry a public $1B+ value; most deal terms stay private, so this map weights by count, not dollars.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Sources:</b> Company and NVIDIA press releases; GEN, NVIDIA newsroom, and industry reporting (2024–2026). <b>Note:</b> This is a selected map of major, publicly disclosed partnerships, not an exhaustive list. Node size reflects the number of partnerships shown here; it is not a measure of deal value. Most partnership financials are undisclosed — only the Lilly–NVIDIA ($1B/5yr) and Novartis–Generate:Biomedicines ($1B+) values are public. Some firms hold additional AI collaborations not pictured.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const svg=document.getElementById('chart');
+
+  const Lx=232, Rx=688, top=66, gap=(520-120)/5;
+  const Y=i=>top+i*gap;
+
+  // left = pharma, right = AI ; ordered to minimize edge crossings
+  const pharma=[
+    {id:'Amgen', y:Y(0)}, {id:'Eli Lilly', y:Y(1)}, {id:'J&J', y:Y(2)},
+    {id:'Novartis', y:Y(3)}, {id:'GSK', y:Y(4)}, {id:'Pfizer', y:Y(5)}
+  ];
+  const ai=[
+    {id:'NVIDIA', y:Y(0)}, {id:'Chai Discovery', y:Y(1)}, {id:'Isomorphic Labs', y:Y(2)},
+    {id:'Generate:Bio', y:Y(3)}, {id:'Boltz', y:Y(4)}, {id:'Noetik', y:Y(5)}
+  ];
+  const edges=[
+    {a:'Amgen', b:'NVIDIA'},
+    {a:'Eli Lilly', b:'NVIDIA', big:'$1B'},
+    {a:'Eli Lilly', b:'Chai Discovery'},
+    {a:'Eli Lilly', b:'Isomorphic Labs'},
+    {a:'J&J', b:'Isomorphic Labs'},
+    {a:'Novartis', b:'Isomorphic Labs'},
+    {a:'Novartis', b:'Generate:Bio', big:'$1B+'},
+    {a:'GSK', b:'Boltz'},
+    {a:'Pfizer', b:'Noetik'}
+  ];
+
+  const P={}, A={};
+  pharma.forEach(n=>{P[n.id]={x:Lx,y:n.y,deg:0}});
+  ai.forEach(n=>{A[n.id]={x:Rx,y:n.y,deg:0}});
+  edges.forEach(e=>{P[e.a].deg++;A[e.b].deg++;});
+
+  // edges
+  edges.forEach((e,i)=>{
+    const s=P[e.a], t=A[e.b];
+    const col=e.big?'var(--gold)':'#33414F';
+    const w=e.big?3.2:1.6;
+    const line=el('path',{d:`M${s.x+4} ${s.y} C ${(s.x+t.x)/2} ${s.y}, ${(s.x+t.x)/2} ${t.y}, ${t.x-4} ${t.y}`,
+      fill:'none',stroke:col,'stroke-width':w,'stroke-opacity':e.big?0.95:0.55},svg);
+    if(!reduce){const L=line.getTotalLength();line.setAttribute('stroke-dasharray',L);line.setAttribute('stroke-dashoffset',L);
+      line.style.animation=`draw .9s ${0.2+i*0.06}s forwards ease`;}
+    if(e.big){
+      const mx=(s.x+t.x)/2, my=(s.y+t.y)/2;
+      const bg=el('rect',{x:mx-22,y:my-19,width:44,height:17,rx:8,fill:'#1A130A',stroke:'var(--gold)','stroke-width':1},svg);
+      const tx=el('text',{x:mx,y:my-6,'text-anchor':'middle',fill:'var(--gold)','font-size':11,'font-weight':700,'font-family':'IBM Plex Mono, monospace'},svg);
+      tx.textContent=e.big;
+    }
+  });
+
+  function drawNode(id,o,side,color){
+    const r=14+o.deg*5;
+    const g=el('g',{style:reduce?'':`opacity:0;animation:pop .5s ${0.5+0.05*o.y/60}s forwards`},svg);
+    el('circle',{cx:o.x,cy:o.y,r:r+6,fill:color,'fill-opacity':0.12},g);
+    el('circle',{cx:o.x,cy:o.y,r:r,fill:'#0B131A',stroke:color,'stroke-width':2.5},g);
+    el('circle',{cx:o.x,cy:o.y,r:r,fill:color,'fill-opacity':0.18},g);
+    // degree number inside
+    el('text',{x:o.x,y:o.y+5,'text-anchor':'middle',fill:'#fff','font-size':14,'font-weight':700,'font-family':'Space Grotesk, sans-serif'},g).textContent=o.deg;
+    // label outside
+    const lx=side==='L'?o.x-r-12:o.x+r+12, anc=side==='L'?'end':'start';
+    el('text',{x:lx,y:o.y-1,'text-anchor':anc,fill:'#E7ECF3','font-size':13.5,'font-weight':600,'font-family':'Space Grotesk, sans-serif'},g).textContent=id;
+    el('text',{x:lx,y:o.y+13,'text-anchor':anc,fill:'#8696A8','font-size':10,'font-family':'IBM Plex Mono, monospace'},g).textContent=o.deg+(o.deg>1?' partnerships':' partnership');
+  }
+  pharma.forEach(n=>drawNode(n.id,P[n.id],'L','#5B8DEF'));
+  ai.forEach(n=>drawNode(n.id,A[n.id],'R','#0CB5C4'));
+
+  // column headers
+  el('text',{x:Lx,y:30,'text-anchor':'middle',fill:'#7E93B5','font-size':11,'letter-spacing':'.16em','font-family':'IBM Plex Mono, monospace','font-weight':600},svg).textContent='DRUGMAKERS';
+  el('text',{x:Rx,y:30,'text-anchor':'middle',fill:'#6FC9D4','font-size':11,'letter-spacing':'.16em','font-family':'IBM Plex Mono, monospace','font-weight':600},svg).textContent='AI PLATFORMS';
+
+  if(!reduce){const st=document.createElement('style');
+    st.textContent='@keyframes draw{to{stroke-dashoffset:0}}@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}';
+    document.head.appendChild(st);}
+})();
+</script>
+</body>
+</html>

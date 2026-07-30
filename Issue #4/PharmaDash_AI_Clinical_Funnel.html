@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — AI vs Traditional in the Clinic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1; --card:#FFFFFF; --panel:#0B131A; --ink:#101620;
+    --muted:#5C6775; --faint:#8A95A3; --hair:#DBE0E7;
+    --ai:#0CB5C4; --trad:#94A3B8; --pending:#5A6B7D;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ai);font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,4.6vw,46px);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .em{background:linear-gradient(transparent 62%, rgba(12,181,196,.22) 62%);padding:0 2px;}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:66ch;margin:0;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 18px;}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:15px 15px 14px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ai)}
+  .kpi.tr::before{background:var(--trad)} .kpi.pd::before{background:var(--pending)}
+  .kpi .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:9px;min-height:24px;}
+  .kpi .val{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:27px;line-height:1.05;letter-spacing:-.02em;color:var(--ai)}
+  .kpi.tr .val{color:#64748B} .kpi.pd .val{color:#475569;font-size:23px}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+
+  .panel{background:radial-gradient(900px 380px at 20% -10%, rgba(12,181,196,.12), transparent 60%),var(--panel);
+    border-radius:16px;padding:20px 18px 14px;color:#E7ECF3;position:relative;box-shadow:0 18px 40px -28px rgba(8,14,24,.7);}
+  .panel-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px;}
+  .ptitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FB0C4;}
+  .ptitle b{color:#E7ECF3;font-weight:600}
+  .legend{display:flex;gap:15px;flex-wrap:wrap}
+  .lg{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#C4D0DD}
+  .lg .sw{width:13px;height:13px;border-radius:3px}
+  .lg .sw.hatch{background:repeating-linear-gradient(45deg,#3A4A5A,#3A4A5A 3px,transparent 3px,transparent 6px);border:1px solid #4A5A6A}
+  svg.chart{width:100%;height:auto;display:block;overflow:visible}
+
+  .read{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 19px;margin-top:14px}
+  .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 13px;display:flex;align-items:center;gap:8px;}
+  .blocktitle::before{content:"";width:14px;height:2px;background:var(--ai)}
+  .read ul{margin:0;padding:0;list-style:none;columns:2;column-gap:28px}
+  .read li{position:relative;padding:0 0 12px 20px;font-size:13.4px;color:#28323F;break-inside:avoid}
+  .read li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;background:var(--ai);transform:rotate(45deg);}
+  .read li b{color:var(--ink)}
+
+  footer{margin-top:18px;padding-top:15px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+  @media(max-width:780px){.kpis{grid-template-columns:repeat(2,1fr)}.read ul{columns:1}}
+  @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi .val{font-size:22px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">PharmaDash · AI Series · Issue 04</div>
+  <h1>AI's clinical edge <span class="em">narrows fast</span></h1>
+  <p class="dek">How AI-discovered molecules perform versus traditional ones at each stage of clinical trials. AI is brilliant at the early step — then the advantage fades, and the decisive tests haven't happened yet.</p>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lab">Phase 1 success · AI</div>
+      <div class="val">80–90%</div>
+      <div class="sub">vs ~52% for traditional molecules</div>
+    </div>
+    <div class="kpi tr">
+      <div class="lab">Phase 2 success · AI</div>
+      <div class="val">~40%</div>
+      <div class="sub">roughly level with traditional methods</div>
+    </div>
+    <div class="kpi pd">
+      <div class="lab">AI-designed drugs approved</div>
+      <div class="val">0</div>
+      <div class="sub">first approval projected for 2026–27</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Most advanced candidate</div>
+      <div class="val" style="font-size:18px;line-height:1.2">Rentosertib</div>
+      <div class="sub">Insilico Medicine — entering Phase 3</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-top">
+      <div class="ptitle"><b>Clinical-trial success rate by phase</b> &nbsp;·&nbsp; % of molecules advancing</div>
+      <div class="legend">
+        <span class="lg"><span class="sw" style="background:var(--ai)"></span> AI-discovered</span>
+        <span class="lg"><span class="sw" style="background:var(--trad)"></span> Traditional</span>
+        <span class="lg"><span class="sw hatch"></span> No AI data yet</span>
+      </div>
+    </div>
+    <svg class="chart" id="chart" viewBox="0 0 920 450" role="img"
+      aria-label="Grouped bar chart of clinical success rates by phase. In Phase 1, AI molecules succeed 80 to 90 percent versus 52 percent for traditional. In Phase 2 both are near 40 percent. Phase 3 and approval have no AI data yet."></svg>
+  </div>
+
+  <div class="read">
+    <p class="blocktitle">The core tension, in one chart</p>
+    <ul>
+      <li><b>AI's superpower is early.</b> An 80–90% Phase 1 success rate shows AI is excellent at designing molecules that are safe and drug-like — a real, measurable edge.</li>
+      <li><b>The edge vanishes in Phase 2.</b> Once molecules must prove they actually <i>work</i>, AI drops to ~40% — the same bar everyone else clears. Designing a molecule isn't the same as curing a disease.</li>
+      <li><b>Phase 3 is the unanswered question.</b> Too few AI drugs have reached late-stage trials to compare. The first wave of readouts lands over the next 18 months.</li>
+      <li><b>Zero approvals — so far.</b> No fully AI-designed drug has been approved yet; the first is projected for 2026–27 at roughly 60% odds. The whole thesis rests on what comes next.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Sources:</b> Jia et al. analysis of AI-native biotech pipelines (ScienceDirect / PubMed); IntuitionLabs; Drug Target Review; Nature Medicine; Science Reader. <b>Important caveats:</b> AI success rates come from small, early samples and may be skewed if AI programs target easier indications — read them as directional. "Phase X success" means the share of molecules advancing past that phase. Traditional Phase 1 success is cited at ~40–52% across sources; ~52% shown here. Phase 3 and approval show no AI bars because too few AI-designed drugs have reached those stages to date.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const svg=document.getElementById('chart');
+
+  const W=920,H=450,mL=58,mR=24,mT=40,mB=78;
+  const innerW=W-mL-mR, innerH=H-mT-mB;
+  const yv=v=>mT+(1-v/100)*innerH;
+
+  // gridlines
+  for(let g=0;g<=100;g+=25){
+    const y=yv(g);
+    el('line',{x1:mL,y1:y,x2:mL+innerW,y2:y,stroke:'#1E2935','stroke-width':1},svg);
+    el('text',{x:mL-10,y:y+4,'text-anchor':'end',fill:'#6F7E90','font-size':12,'font-family':'IBM Plex Mono, monospace'},svg).textContent=g+'%';
+  }
+
+  // hatch pattern for "no data"
+  const defs=el('defs',{},svg);
+  const pat=el('pattern',{id:'nd',width:7,height:7,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);
+  el('rect',{width:7,height:7,fill:'#11202C'},pat);
+  el('line',{x1:0,y1:0,x2:0,y2:7,stroke:'#33454F','stroke-width':3},pat);
+
+  const phases=[
+    {name:'Phase 1', sub:'safe & drug-like?', ai:85, aiLo:80, aiHi:90, trad:52, note:'AI\u2019s big edge'},
+    {name:'Phase 2', sub:'does it work?', ai:40, trad:36, note:'\u2248 parity'},
+    {name:'Phase 3', sub:'works at scale?', pending:'Awaiting first readouts'},
+    {name:'Approval', sub:'reaches patients', pending:'0 approved \u00b7 first ~2026\u201327'}
+  ];
+  const n=phases.length, slot=innerW/n, bw=58, gap=14;
+
+  phases.forEach((p,i)=>{
+    const cx=mL+slot*i+slot/2, y0=yv(0);
+    // phase label
+    el('text',{x:cx,y:H-mB+26,'text-anchor':'middle',fill:'#D5DEE8','font-size':14,'font-weight':700,'font-family':'Space Grotesk, sans-serif'},svg).textContent=p.name;
+    el('text',{x:cx,y:H-mB+43,'text-anchor':'middle',fill:'#8696A8','font-size':11,'font-family':'IBM Plex Mono, monospace'},svg).textContent=p.sub;
+
+    if(p.pending){
+      // ghost bar
+      const gh=el('rect',{x:cx-bw/2,y:yv(50),width:bw,height:y0-yv(50),rx:4,fill:'url(#nd)',stroke:'#33454F','stroke-width':1.5,'stroke-dasharray':'4 3'},svg);
+      el('text',{x:cx,y:yv(50)-26,'text-anchor':'middle',fill:'#7C8C9B','font-size':22,'font-weight':700,'font-family':'Space Grotesk, sans-serif'},svg).textContent='?';
+      // wrap note
+      const words=p.pending.split(' '); let line='',ly=yv(50)+ (p.name==='Approval'? -6 : -6);
+      const tx=el('text',{x:cx,y:yv(50)+ (y0-yv(50))/2 -4,'text-anchor':'middle',fill:'#9FB0C4','font-size':10.5,'font-family':'IBM Plex Mono, monospace'},svg);
+      // simple two-line
+      const half=Math.ceil(words.length/2);
+      const t1=el('tspan',{x:cx,dy:0},tx); t1.textContent=words.slice(0,half).join(' ');
+      const t2=el('tspan',{x:cx,dy:14},tx); t2.textContent=words.slice(half).join(' ');
+      return;
+    }
+
+    const x1=cx-bw-gap/2, x2=cx+gap/2;
+    const anim=(off)=>reduce?'':'transform-origin:center '+y0+'px;transform:scaleY(0);animation:grow .8s '+off+'s forwards cubic-bezier(.2,.7,.2,1)';
+    // AI bar
+    const aR=el('rect',{x:x1,y:yv(p.ai),width:bw,height:y0-yv(p.ai),rx:4,fill:'var(--ai)',style:anim(i*0.12)},svg);
+    el('text',{x:x1+bw/2,y:yv(p.ai)-8,'text-anchor':'middle',fill:'#5FE6F0','font-family':'Space Grotesk, sans-serif','font-weight':700,'font-size':15},svg).textContent=(p.aiLo?p.aiLo+'\u2013'+p.aiHi:p.ai+'%')+(p.aiLo?'%':'');
+    // AI range whisker (Phase 1)
+    if(p.aiLo){
+      const xc=x1+bw/2;
+      el('line',{x1:xc,y1:yv(p.aiLo),x2:xc,y2:yv(p.aiHi),stroke:'#E7ECF3','stroke-width':2},svg);
+      [p.aiLo,p.aiHi].forEach(v=>el('line',{x1:xc-7,y1:yv(v),x2:xc+7,y2:yv(v),stroke:'#E7ECF3','stroke-width':2},svg));
+    }
+    // Traditional bar
+    el('rect',{x:x2,y:yv(p.trad),width:bw,height:y0-yv(p.trad),rx:4,fill:'var(--trad)','fill-opacity':0.85,style:anim(i*0.12+0.06)},svg);
+    el('text',{x:x2+bw/2,y:yv(p.trad)-8,'text-anchor':'middle',fill:'#B6C2CF','font-family':'Space Grotesk, sans-serif','font-weight':700,'font-size':14},svg).textContent='~'+p.trad+'%';
+    // note pill above pair
+    if(p.note){
+      const ny=Math.min(yv(p.ai),yv(p.trad))-34;
+      const col=p.note==='\u2248 parity'?'#E0A100':'#0CB5C4';
+      el('text',{x:cx,y:ny,'text-anchor':'middle',fill:col,'font-size':12,'font-weight':700,'font-family':'IBM Plex Mono, monospace'},svg).textContent=p.note;
+    }
+  });
+
+  // narrative arrow under title area
+  el('text',{x:mL,y:mT-16,fill:'#6FC9D4','font-size':11,'font-family':'IBM Plex Mono, monospace','letter-spacing':'.08em'},svg).textContent='edge \u2192 parity \u2192 unproven';
+
+  if(!reduce){const st=document.createElement('style');
+    st.textContent='@keyframes grow{to{transform:scaleY(1)}}';document.head.appendChild(st);}
+})();
+</script>
+</body>
+</html>
