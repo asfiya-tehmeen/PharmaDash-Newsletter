@@ -1,0 +1,127 @@
+{
+  "file_stem": "PharmaDash_MA_Supercycle_Chart",
+  "series": "M&A Series",
+  "issue": 3,
+  "title_before": "Pharma's ",
+  "title_em": "M&A supercycle",
+  "title_after": ", in one frame",
+  "dek": "After a post-pandemic trough and a soft 2024, dealmaking has roared back. 2026 is on pace for the biggest year since 2019, and the deals aren't just more frequent, they're bigger.",
+  "accent": "#10916B",
+  "panel": "#0E141B",
+  "kpis": [
+    {
+      "label": "Booked so far \u00b7 2026",
+      "value": "$106B",
+      "sub": "across 201 deals (early June, PitchBook)",
+      "claim": "C006"
+    },
+    {
+      "label": "On track for",
+      "value": "~$250B",
+      "sub": "strongest year since the 2019 peak",
+      "claim": "C005"
+    },
+    {
+      "label": "Average deal size",
+      "value": "$527M",
+      "delta": "+44%",
+      "sub": "up from $365M in 2025",
+      "gold": true,
+      "claim": "C008"
+    },
+    {
+      "label": "Firepower remaining",
+      "value": "~$1.3T",
+      "sub": "Big Pharma deal capacity, mostly unspent",
+      "claim": "C010"
+    }
+  ],
+  "chart": {
+    "kind": "bar",
+    "title": "Global biopharma M&A deal value",
+    "unit_label": "$ billions per year",
+    "prefix": "$",
+    "suffix": "B",
+    "actual_label": "Booked",
+    "points": [
+      {
+        "label": "2022",
+        "text": "~$86B",
+        "style": "approx",
+        "claim": "C001"
+      },
+      {
+        "label": "2023",
+        "text": "~$150B",
+        "style": "approx",
+        "claim": "C002"
+      },
+      {
+        "label": "2024",
+        "text": "$115B",
+        "style": "actual",
+        "claim": "C003"
+      },
+      {
+        "label": "2025",
+        "text": "$209B",
+        "style": "actual",
+        "claim": "C004"
+      },
+      {
+        "label": "2026",
+        "text": "~$250B",
+        "style": "projected",
+        "claim": "C005",
+        "booked_text": "$106B"
+      }
+    ],
+    "ref": {
+      "text": "$204B",
+      "label": "2019 peak",
+      "claim": "C011"
+    }
+  },
+  "mini_title": "Bigger, not just busier",
+  "mini": {
+    "kind": "bar",
+    "title": "Average deal size",
+    "prefix": "$",
+    "suffix": "M",
+    "points": [
+      {
+        "label": "2025",
+        "text": "$365M",
+        "claim": "C007"
+      },
+      {
+        "label": "2026",
+        "text": "$527M",
+        "claim": "C008",
+        "highlight": true
+      }
+    ]
+  },
+  "mini_caption": "Average deal value jumped 44% in a single year: buyers are reaching for larger, nearer-to-market assets.",
+  "reading_title": "Reading the cycle",
+  "reading": [
+    {
+      "lead": "The trough was 2022.",
+      "text": "Post-pandemic, dealmaking dried up as balance sheets and valuations reset."
+    },
+    {
+      "lead": "2024 was a head-fake.",
+      "text": "Deal value stayed muted at about $115B."
+    },
+    {
+      "lead": "2025 broke it open.",
+      "text": "Value rose to about $209B."
+    },
+    {
+      "lead": "2026 is the breakout.",
+      "text": "$106B booked by early June puts the year on a ~$250B trajectory, with ~$1.3T in firepower still in reserve."
+    }
+  ],
+  "sources": "PitchBook via CNBC (June 2026) for 2024, 2025 and the 2026 projection.",
+  "caveat": "2022 and 2023 bars are approximate full-year totals and shown with a ~; figures vary by data provider and methodology, so read them as directional. A 2026 total of $250B assumes the current pace holds."
+}

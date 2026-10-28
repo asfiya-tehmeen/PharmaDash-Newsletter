@@ -1,0 +1,64 @@
+[
+  {
+    "headline": "Why Big Pharma Is Sourcing Its Next Blockbusters From China",
+    "angle": "DRY-RUN FIXTURE. Out-licensing from China is accelerating.",
+    "why_now": "Dry-run fixture topic.",
+    "key_numbers": [
+      {
+        "text": "Chinese biotechs signed $137.7 billion of out-licensing deals in 2025",
+        "source_url": "n1"
+      }
+    ],
+    "dashboard_types": [
+      "bar"
+    ],
+    "sources": [
+      "n1",
+      "n2",
+      "n3"
+    ],
+    "risk_flags": [],
+    "confidence": "medium",
+    "evergreen": false,
+    "scores": {
+      "recency": 8.0,
+      "financial_magnitude": 8.0,
+      "relevance": 8.0,
+      "dashboard_ability": 8.0,
+      "freshness_vs_history": 7.0,
+      "reader_interest": 8.0
+    },
+    "total_score": 8.1
+  },
+  {
+    "headline": "China licensing, second look (fixture)",
+    "angle": "DRY-RUN FIXTURE. Same ledger, second topic, to exercise multi-topic runs.",
+    "why_now": "Dry-run fixture topic.",
+    "key_numbers": [
+      {
+        "text": "Chinese biotechs signed $137.7 billion of out-licensing deals in 2025",
+        "source_url": "n1"
+      }
+    ],
+    "dashboard_types": [
+      "bar"
+    ],
+    "sources": [
+      "n1",
+      "n2",
+      "n3"
+    ],
+    "risk_flags": [],
+    "confidence": "medium",
+    "evergreen": false,
+    "scores": {
+      "recency": 8.0,
+      "financial_magnitude": 8.0,
+      "relevance": 8.0,
+      "dashboard_ability": 8.0,
+      "freshness_vs_history": 7.0,
+      "reader_interest": 8.0
+    },
+    "total_score": 7.4
+  }
+]

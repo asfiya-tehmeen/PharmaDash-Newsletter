@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — The Reshoring Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1; --card:#FFFFFF; --panel:#0C1119; --ink:#101620;
+    --muted:#5C6775; --faint:#8A95A3; --hair:#DBE0E7;
+    --steel:#2E6BD6; --steel-soft:#7BA5EE; --hub:#E0A100; --green:#1C8C6A;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--steel);font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,4.6vw,46px);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .em{background:linear-gradient(transparent 62%, rgba(46,107,214,.20) 62%);padding:0 2px;}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:66ch;margin:0;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 18px;}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:15px 15px 14px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--steel)}
+  .kpi.hub::before{background:var(--hub)}
+  .kpi .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:9px;min-height:24px;}
+  .kpi .val{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:27px;line-height:1.05;letter-spacing:-.02em;color:var(--steel)}
+  .kpi.hub .val{color:#B5820A}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+
+  .panel{background:radial-gradient(900px 420px at 78% -10%, rgba(46,107,214,.13), transparent 60%),var(--panel);
+    border-radius:16px;padding:18px 16px 12px;color:#E7ECF3;position:relative;box-shadow:0 18px 40px -28px rgba(8,14,24,.7);}
+  .panel-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:2px;padding:0 6px;}
+  .ptitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FB0C4;}
+  .ptitle b{color:#E7ECF3;font-weight:600}
+  .legend{display:flex;gap:14px;flex-wrap:wrap}
+  .lg{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#C4D0DD}
+  .lg .dot{width:11px;height:11px;border-radius:50%}
+  svg.chart{width:100%;height:auto;display:block;overflow:visible}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .ranks,.read{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 19px}
+  .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .blocktitle::before{content:"";width:14px;height:2px;background:var(--steel)}
+  .rrow{display:grid;grid-template-columns:96px 1fr 42px;align-items:center;gap:10px;margin-bottom:7px}
+  .rrow .co{font-size:12.5px;font-weight:600;color:#28323F}
+  .rrow .tk{height:14px;background:#EDF1F6;border-radius:4px;overflow:hidden}
+  .rrow .fl{height:100%;background:var(--steel);border-radius:4px;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+  .rrow .amt{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:12.5px;color:var(--steel);text-align:right}
+  .ranks .tot{font-size:11.5px;color:var(--faint);margin-top:10px}
+
+  .read ul{margin:0;padding:0;list-style:none}
+  .read li{position:relative;padding:0 0 12px 20px;font-size:13.4px;color:#28323F}
+  .read li:last-child{padding-bottom:0}
+  .read li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;background:var(--steel);transform:rotate(45deg);}
+  .read li b{color:var(--ink)}
+
+  footer{margin-top:18px;padding-top:15px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+  @media(max-width:780px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+  @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi .val{font-size:21px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">PharmaDash · Pricing Series · Issue 06</div>
+  <h1>Building America to <span class="em">beat the tariff</span></h1>
+  <p class="dek">Facing a 100% tariff on imported drugs, pharma has pledged over $400 billion to build in the US. Here's where the biggest confirmed plants are landing — and which companies are spending the most.</p>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lab">Total US pledged</div>
+      <div class="val">$400B+</div>
+      <div class="sub">across 14+ companies (est. $370–480B)</div>
+    </div>
+    <div class="kpi hub">
+      <div class="lab">The emerging hub</div>
+      <div class="val">N. Carolina</div>
+      <div class="sub">100+ existing sites · 6+ new projects</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Biggest single plant</div>
+      <div class="val">$6.5B</div>
+      <div class="sub">Lilly's Houston, TX oral-GLP-1 facility</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Top pledgers</div>
+      <div class="val">$70B</div>
+      <div class="sub">Pfizer and Merck each, over 5 years</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-top">
+      <div class="ptitle"><b>Where the confirmed plants are landing</b> &nbsp;·&nbsp; bubble size = named-project investment</div>
+      <div class="legend">
+        <span class="lg"><span class="dot" style="background:var(--steel)"></span> Confirmed projects</span>
+        <span class="lg"><span class="dot" style="background:var(--hub)"></span> North Carolina hub</span>
+      </div>
+    </div>
+    <svg class="chart" id="map" viewBox="0 0 920 470" role="img"
+      aria-label="Stylised US map showing confirmed pharma manufacturing projects concentrated in Virginia, North Carolina, and Texas, with smaller clusters in Ohio, Pennsylvania and California."></svg>
+  </div>
+
+  <div class="grid2">
+    <div class="ranks">
+      <p class="blocktitle">US pledges by company · $B over ~5 yrs</p>
+      <div id="ranks"></div>
+      <p class="tot">Pledges are total US commitments spanning multiple sites and years; not all are yet allocated to specific states.</p>
+    </div>
+    <div class="read">
+      <p class="blocktitle">Reading the buildout</p>
+      <ul>
+        <li><b>North Carolina is the density hub.</b> J&amp;J, Amgen, Biogen, Roche and Novartis all have new projects there — on top of 100+ existing sites in the state.</li>
+        <li><b>Virginia and Texas host the biggest single plants.</b> Lilly's $6.5B Houston site and $5B Richmond plant, plus Merck's $3B and AstraZeneca's $4.5B Virginia builds.</li>
+        <li><b>It's an API and biologics play.</b> Almost every new plant targets active ingredients and biologics — the parts of the supply chain most exposed to the tariff.</li>
+        <li><b>Watch the gap between pledge and payback.</b> These plants take years to build and ~8–10 years to pay off — so some of the $400B may be signaling as much as steel.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Sources:</b> DCAT Value Chain Insights (company pledge totals); Construction Dive, PharmaVoice and Think Global Health (site locations and values); DPR Construction and White House investment tallies. <b>Note:</b> Map bubbles are sized by the sum of <i>confirmed, named</i> project investments in each state, not by allocating whole company pledges to one location — much of the $400B+ is multi-site or not yet assigned to a state. Aggregate estimates range from ~$370B (DPR) to ~$480B (Think Global Health) depending on scope and time horizon. Geographic positions are approximate.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- STATE BUBBLE MAP ---------- */
+  const svg=document.getElementById('map');
+  // approximate geographic positions on a stylised US canvas
+  const states=[
+    {st:'Virginia', ab:'VA', x:735, y:250, val:12.5, cos:'Lilly · Merck · AstraZeneca'},
+    {st:'North Carolina', ab:'NC', x:715, y:300, val:10, cos:'J&J · Amgen · Biogen · Roche', hub:true},
+    {st:'Texas', ab:'TX', x:455, y:360, val:6.5, cos:'Lilly · Novartis · AstraZeneca'},
+    {st:'Ohio', ab:'OH', x:650, y:220, val:2.4, cos:'Amgen · Hikma'},
+    {st:'Pennsylvania', ab:'PA', x:715, y:205, val:1.2, cos:'GSK · J&J'},
+    {st:'California', ab:'CA', x:120, y:250, val:1.1, cos:'Novartis'},
+    {st:'Indiana', ab:'IN', x:600, y:225, val:1.0, cos:'Lilly'},
+    {st:'Florida', ab:'FL', x:715, y:400, val:1.0, cos:'Novartis'}
+  ];
+  // faint framing
+  el('text',{x:460,y:30,'text-anchor':'middle',fill:'#3A4756','font-size':12,'letter-spacing':'.3em','font-family':'IBM Plex Mono, monospace'},svg).textContent='UNITED STATES';
+  // subtle W/E gridline hint
+  el('line',{x1:60,y1:435,x2:860,y2:435,stroke:'#182230','stroke-width':1},svg);
+
+  const rscale=v=>5.6*Math.sqrt(v);
+  states.forEach((s,i)=>{
+    const col=s.hub?'var(--hub)':'var(--steel)';
+    const r=rscale(s.val);
+    const g=el('g',{style:reduce?'':`opacity:0;animation:pop .5s ${0.2+i*0.08}s forwards`},svg);
+    if(s.hub){ el('circle',{cx:s.x,cy:s.y,r:r+9,fill:'none',stroke:'var(--hub)','stroke-width':1.5,'stroke-dasharray':'3 4','stroke-opacity':.7},g); }
+    el('circle',{cx:s.x,cy:s.y,r:r+6,fill:col,'fill-opacity':0.12},g);
+    el('circle',{cx:s.x,cy:s.y,r:r,fill:col,'fill-opacity':0.24,stroke:col,'stroke-width':2},g);
+    el('text',{x:s.x,y:s.y+4,'text-anchor':'middle',fill:'#fff','font-size':12,'font-weight':700,'font-family':'Space Grotesk, sans-serif'},g).textContent=s.ab;
+    // label block (offset)
+    const lx=s.x+r+10, up=(s.ab==='FL'||s.ab==='TX');
+    const ly=s.y - (up? r+14 : 0);
+    const anc = s.x>760?'end':'start';
+    const tx = anc==='end'? s.x - r - 10 : lx;
+    const nm=el('text',{x:tx,y:s.y-3,'text-anchor':anc,fill:'#E7ECF3','font-size':12.5,'font-weight':700,'font-family':'Space Grotesk, sans-serif'},g);
+    nm.textContent=s.st+(s.hub?'  \u2605':'');
+    if(s.hub) nm.setAttribute('fill','#F0C34E');
+    el('text',{x:tx,y:s.y+11,'text-anchor':anc,fill:'#9FB0C4','font-size':10,'font-family':'IBM Plex Mono, monospace'},g).textContent='~$'+s.val+'B · '+s.cos.split(' · ').length+' cos.';
+  });
+  // hub callout
+  el('text',{x:715,y:355,'text-anchor':'middle',fill:'#F0C34E','font-size':11,'font-weight':700,'letter-spacing':'.08em','font-family':'IBM Plex Mono, monospace',
+    style:reduce?'':'opacity:0;animation:pop .5s 1s forwards'},svg).textContent='\u2605 THE HUB';
+
+  /* ---------- COMPANY PLEDGE RANKING ---------- */
+  const ranks=[
+    {co:'Pfizer', v:70},{co:'Merck', v:70},{co:'J&J', v:55},{co:'AstraZeneca', v:50},
+    {co:'Eli Lilly', v:50},{co:'Gilead', v:32},{co:'GSK', v:30},{co:'Novartis', v:23},
+    {co:'Sanofi', v:20},{co:'AbbVie', v:10},{co:'Novo Nordisk', v:4.1},{co:'Amgen', v:3},
+    {co:'Biogen', v:2},{co:'Regeneron', v:2}
+  ];
+  const rmax=70, total=ranks.reduce((a,b)=>a+b.v,0);
+  const box=document.getElementById('ranks');
+  ranks.forEach((r,i)=>{
+    const row=document.createElement('div'); row.className='rrow';
+    row.innerHTML='<div class="co">'+r.co+'</div><div class="tk"><div class="fl" style="width:0"></div></div><div class="amt">$'+r.v+'B</div>';
+    box.appendChild(row);
+    const fl=row.querySelector('.fl');
+    const w=(r.v/rmax*100)+'%';
+    if(reduce) fl.style.width=w; else setTimeout(()=>fl.style.width=w, 200+i*45);
+  });
+  const t=document.createElement('p'); t.className='tot';
+  t.textContent='Shown: 14 companies · ~$'+Math.round(total)+'B combined.';
+  box.appendChild(t);
+
+  if(!reduce){const st=document.createElement('style');
+    st.textContent='@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}';
+    document.head.appendChild(st);}
+})();
+</script>
+</body>
+</html>

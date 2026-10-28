@@ -1,0 +1,117 @@
+{
+  "file_stem": "PharmaDash_China_Licensing_Dry",
+  "series": "China Licensing Series",
+  "issue": 8,
+  "title_before": "China's ",
+  "title_em": "licensing takeoff",
+  "title_after": ", in numbers",
+  "dek": "Deal value with Chinese biotechs grew from $13.9 billion in 2021 to $52 billion in 2024, and 2025 set a record at $137.7 billion.",
+  "accent": "#D22A38",
+  "panel": "#0E141B",
+  "kpis": [
+    {
+      "label": "2025 deal value",
+      "value": "$137.7B",
+      "sub": "record, as announced",
+      "gold": true,
+      "claim": "C001"
+    },
+    {
+      "label": "2024 deal value",
+      "value": "$52B",
+      "sub": "aggregate, as announced",
+      "claim": "C005"
+    },
+    {
+      "label": "Deals in 2025",
+      "value": "186",
+      "sub": "Greater China, cross-border",
+      "claim": "C006"
+    },
+    {
+      "label": "Deals in 2024",
+      "value": "65",
+      "sub": "Greater China, cross-border",
+      "claim": "C007"
+    }
+  ],
+  "chart": {
+    "kind": "bar",
+    "title": "Deal value with Chinese biotechs",
+    "unit_label": "$ billions per year",
+    "prefix": "$",
+    "suffix": "B",
+    "actual_label": "As announced",
+    "points": [
+      {
+        "label": "2021",
+        "text": "$13.9B",
+        "claim": "C002"
+      },
+      {
+        "label": "2022",
+        "text": "~$32B",
+        "style": "approx",
+        "claim": "C003"
+      },
+      {
+        "label": "2023",
+        "text": "$35B",
+        "claim": "C004"
+      },
+      {
+        "label": "2024",
+        "text": "$52B",
+        "claim": "C005"
+      },
+      {
+        "label": "2025",
+        "text": "$137.7B",
+        "claim": "C001",
+        "highlight": true
+      }
+    ]
+  },
+  "mini_title": "Deal count",
+  "mini": {
+    "kind": "bar",
+    "title": "Cross-border out-licensing deals",
+    "prefix": "",
+    "suffix": "",
+    "points": [
+      {
+        "label": "2024",
+        "text": "65",
+        "claim": "C007"
+      },
+      {
+        "label": "2025",
+        "text": "186",
+        "claim": "C006",
+        "highlight": true
+      }
+    ]
+  },
+  "mini_caption": "Greater China firms completed 186 cross-border deals in 2025, up from 65 in 2024.",
+  "reading_title": "Reading the numbers",
+  "reading": [
+    {
+      "lead": "A record year.",
+      "text": "Deal value reached $137.7 billion in 2025, as announced."
+    },
+    {
+      "lead": "Steady climb first.",
+      "text": "Value rose from $13.9 billion in 2021 to $52 billion in 2024."
+    },
+    {
+      "lead": "More deals, not just bigger ones.",
+      "text": "Deal count went from 65 in 2024 to 186 in 2025."
+    },
+    {
+      "lead": "A deep pipeline.",
+      "text": "China accounts for around 30% of the world's novel drug candidates."
+    }
+  ],
+  "sources": "x",
+  "caveat": "Deal values are as announced and include milestone payments that may never be paid; figures vary by data provider."
+}

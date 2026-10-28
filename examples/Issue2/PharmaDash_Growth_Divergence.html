@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — Two Giants, Opposite Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1;
+    --card:#FFFFFF;
+    --panel:#0E141B;
+    --ink:#101620;
+    --muted:#5C6775;
+    --faint:#8A95A3;
+    --hair:#DBE0E7;
+    --novo:#1F5FE0;
+    --novo-soft:#7CA6F2;
+    --lilly:#E5223C;
+    --lilly-soft:#F4889A;
+    --amber:#B45309;
+    --amber-bg:#FBF0DF;
+    --amber-line:#E7C58C;
+    --up:#15904A;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--lilly);font-weight:600;
+    display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;
+    font-size:clamp(28px,4.6vw,46px);line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .up{color:var(--lilly)} h1 .down{color:var(--novo)}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:64ch;margin:0;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 18px;}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;
+    padding:15px 15px 14px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .kpi.k-lilly::before{background:var(--lilly)}
+  .kpi.k-novo::before{background:var(--novo)}
+  .kpi .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--faint);margin-bottom:9px;min-height:24px;}
+  .kpi .val{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:30px;
+    line-height:1;letter-spacing:-.02em;display:flex;align-items:baseline;gap:4px}
+  .kpi.k-lilly .val{color:var(--lilly)} .kpi.k-novo .val{color:var(--novo)}
+  .kpi .arr{font-size:18px;line-height:1}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+
+  .panel{background:
+      radial-gradient(900px 360px at 22% -20%, rgba(229,34,60,.10), transparent 60%),
+      radial-gradient(900px 360px at 80% 120%, rgba(31,95,224,.12), transparent 60%),
+      var(--panel);
+    border-radius:16px;padding:20px 18px 16px;color:#E7ECF3;position:relative;
+    box-shadow:0 18px 40px -28px rgba(8,14,24,.7);}
+  .panel-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+    flex-wrap:wrap;margin-bottom:4px;}
+  .panel-top .ptitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:#9FB0C4;}
+  .panel-top .ptitle b{color:#E7ECF3;font-weight:600}
+  .panel-top .legend{display:flex;gap:16px}
+  .lg{display:flex;align-items:center;gap:8px;font-size:12px;color:#C4D0DD}
+  .lg .sw{width:13px;height:13px;border-radius:3px}
+  .lg.solid .sw{opacity:1} .lg.faint .sw{opacity:.4}
+
+  svg.chart{width:100%;height:auto;display:block;overflow:visible}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .engines,.read{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 19px}
+  .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--faint);margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .blocktitle::before{content:"";width:14px;height:2px;background:var(--lilly)}
+  svg.engines-svg{width:100%;height:auto;display:block}
+  .engines .cap{font-size:11px;color:var(--faint);margin-top:10px;line-height:1.5}
+
+  .read ul{margin:0;padding:0;list-style:none}
+  .read li{position:relative;padding:0 0 13px 20px;font-size:13.6px;color:#28323F}
+  .read li:last-child{padding-bottom:0}
+  .read li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;
+    background:var(--lilly);transform:rotate(45deg);}
+  .read li:nth-child(even)::before{background:var(--novo)}
+  .read li b{color:var(--ink)}
+
+  .caveat{background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:14px;
+    padding:18px 19px;margin-top:14px;}
+  .caveat .blocktitle{color:var(--amber)} .caveat .blocktitle::before{background:var(--amber)}
+  .caveat .row{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+  .caveat .figure{flex:none;display:flex;gap:16px;align-items:center}
+  .caveat .fblock{text-align:center}
+  .caveat .fblock .n{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:26px;line-height:1}
+  .caveat .fblock.rep .n{color:#9A8246}
+  .caveat .fblock.adj .n{color:var(--amber)}
+  .caveat .fblock .l{font-size:10px;font-family:"IBM Plex Mono",monospace;letter-spacing:.06em;
+    text-transform:uppercase;color:#9A8763;margin-top:5px}
+  .caveat .arrow{font-size:22px;color:#C2A45E;align-self:center}
+  .caveat p{margin:0;font-size:13.4px;color:#5C4416;flex:1;min-width:240px}
+  .caveat p b{color:#3F2F0C}
+
+  footer{margin-top:20px;padding-top:15px;border-top:1px solid var(--hair);
+    font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+
+  @media(max-width:780px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+  @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi .val{font-size:24px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">PharmaDash · GLP-1 Series · Issue 02</div>
+  <h1>Two giants, <span class="up">opposite</span> <span class="down">directions</span></h1>
+  <p class="dek">Eli Lilly is guiding to its biggest year ever. Novo Nordisk is bracing for a decline. Same drug class, same quarter — and trajectories pointing the opposite way.</p>
+
+  <div class="kpis">
+    <div class="kpi k-lilly">
+      <div class="lab">Eli Lilly · Q1 2026 sales</div>
+      <div class="val"><span class="arr">▲</span>+56%</div>
+      <div class="sub">$19.8B revenue, year over year</div>
+    </div>
+    <div class="kpi k-novo">
+      <div class="lab">Novo Nordisk · Q1 2026 sales</div>
+      <div class="val"><span class="arr">▼</span>−4%</div>
+      <div class="sub">adjusted, CER · reported +32% was a one-off</div>
+    </div>
+    <div class="kpi k-lilly">
+      <div class="lab">Eli Lilly · FY2026 guidance</div>
+      <div class="val">$82–85B</div>
+      <div class="sub">≈ +28% growth · raised after Q1 beat</div>
+    </div>
+    <div class="kpi k-novo">
+      <div class="lab">Novo Nordisk · FY2026 guidance</div>
+      <div class="val">−4 to −12%</div>
+      <div class="sub">adjusted sales, CER · also raised</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-top">
+      <div class="ptitle"><b>Sales growth: Q1 actual vs. full-year outlook</b> &nbsp;·&nbsp; % change year over year</div>
+      <div class="legend">
+        <span class="lg solid"><span class="sw" style="background:#9AA6B4"></span> Q1 2026 actual</span>
+        <span class="lg faint"><span class="sw" style="background:#9AA6B4"></span> FY2026 outlook</span>
+      </div>
+    </div>
+    <svg class="chart" id="chart" viewBox="0 0 920 470" role="img"
+      aria-label="Diverging column chart: Eli Lilly's Q1 2026 sales grew 56% and full-year guidance implies about 28% growth, while Novo Nordisk's adjusted Q1 sales fell 4% and full-year guidance is a decline of 4 to 12 percent."></svg>
+  </div>
+
+  <div class="grid2">
+    <div class="engines">
+      <p class="blocktitle">The engines · Q1 2026 growth by product</p>
+      <svg class="engines-svg" id="engines" viewBox="0 0 460 210" aria-label="Horizontal bars showing Q1 2026 year-over-year growth: Mounjaro plus 125 percent, Zepbound plus 80 percent, Novo obesity care plus 22 percent, Ozempic minus 8 percent."></svg>
+      <p class="cap">Lilly's tirzepatide twins are doing the lifting — Mounjaro alone booked $8.7B and overtook Keytruda as the world's best-selling drug. Novo's obesity line still grows, but legacy diabetes is sliding.</p>
+    </div>
+    <div class="read">
+      <p class="blocktitle">Reading the divergence</p>
+      <ul>
+        <li><b>Patents are destiny.</b> Lilly says tirzepatide is protected into the back half of the 2030s; Novo faces semaglutide exclusivity loss in markets like China, Brazil and Canada — right now.</li>
+        <li><b>Price vs. volume.</b> Novo's volumes are still climbing, but lower US realised prices are pulling revenue down faster than volume lifts it.</li>
+        <li><b>Even the "raise" is a smaller decline.</b> Novo nudged guidance from −5%/−13% to −4%/−12%. Better — but still pointing down.</li>
+        <li><b>Lilly's floor is Novo's ceiling.</b> The bottom of Lilly's guidance (~+26%) sits far above the best case in Novo's range (−4%).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <p class="blocktitle">The +32% mirage</p>
+    <div class="row">
+      <div class="figure">
+        <div class="fblock rep"><div class="n">+32%</div><div class="l">reported</div></div>
+        <div class="arrow">→</div>
+        <div class="fblock adj"><div class="n">−4%</div><div class="l">adjusted</div></div>
+      </div>
+      <p>Novo's headline Q1 sales jumped 32% at constant currency — but that was inflated by a one-time <b>$4.2B (DKK 26.8B) reversal</b> of 340B rebate provisions in the US. Strip the one-off out and underlying sales <b>fell 4%</b>. For 2026, always read Novo's adjusted line — the reported figure flatters a business that is contracting.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Sources:</b> Eli Lilly Q1 2026 results (Apr 30, 2026); Novo Nordisk Q1 2026 Form 6-K &amp; company release (May 6, 2026); CNBC; Pharmaceutical Technology. <b>Notes:</b> Lilly growth is reported, year over year, in USD. Novo growth is adjusted and at constant exchange rates (CER), excluding the one-time 340B provision reversal. FY2026 figures are company guidance; Lilly's ≈+28% is implied by its $82–85B revenue guidance against ~$65B in 2025 sales. Drug-level figures are Q1 2026 YoY (Novo obesity care and Ozempic at CER).
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ============ HERO: diverging grouped columns ============ */
+  const svg=document.getElementById('chart');
+  const W=920,H=470,mL=66,mR=44,mT=42,mB=72;
+  const innerW=W-mL-mR, innerH=H-mT-mB;
+  const YMIN=-20, YMAX=60, SPAN=YMAX-YMIN;
+  const yv=v=>mT+(YMAX-v)/SPAN*innerH;
+
+  // gridlines
+  for(let g=YMIN; g<=YMAX; g+=10){
+    const y=yv(g), zero=(g===0);
+    el('line',{x1:mL,y1:y,x2:mL+innerW,y2:y,
+      stroke:zero?'#46566A':'#1F2A37','stroke-width':zero?2:1},svg);
+    const t=el('text',{x:mL-12,y:y+4,'text-anchor':'end',
+      fill:zero?'#AEBED0':'#6F7E90','font-size':12.5,'font-family':'IBM Plex Mono, monospace'},svg);
+    t.textContent=(g>0?'+':'')+g+'%';
+  }
+  // zero baseline label
+  const zl=el('text',{x:mL+innerW,y:yv(0)-9,'text-anchor':'end',fill:'#8A99AB',
+    'font-size':11,'font-family':'IBM Plex Mono, monospace'},svg);
+  zl.textContent='2025 LEVEL';
+
+  // groups
+  const groups=[
+    {name:'ELI LILLY', color:'#E5223C', cx:mL+innerW*0.30,
+      q1:56, fyMid:28, fyLo:26, fyHi:31, tag:'$82–85B guidance'},
+    {name:'NOVO NORDISK', color:'#1F5FE0', cx:mL+innerW*0.72,
+      q1:-4, fyMid:-8, fyLo:-4, fyHi:-12, tag:'adjusted · CER'}
+  ];
+  const bw=78, gap=18;
+
+  groups.forEach((G,gi)=>{
+    const x1=G.cx-bw-gap/2, x2=G.cx+gap/2;
+    const y0=yv(0);
+
+    // Q1 actual (solid)
+    drawBar(x1,G.q1,G.color,1, 'Q1 2026', G.q1);
+    // FY outlook (faint) with range whisker
+    drawBar(x2,G.fyMid,G.color,0.42, 'FY2026', G.fyMid, {lo:G.fyLo,hi:G.fyHi});
+
+    function drawBar(x,val,color,op,kind,labelVal,range){
+      const yTop=yv(Math.max(0,val)), yBot=yv(Math.min(0,val));
+      el('rect',{x:x,y:yTop,width:bw,height:Math.max(2,yBot-yTop),
+        fill:color,'fill-opacity':op,rx:3,
+        style:reduce?'':'transform-origin:'+ (x+bw/2)+'px '+y0+'px;transform:scaleY(0);animation:grow .8s '+(gi*0.12+(kind==='FY2026'?0.12:0))+'s forwards cubic-bezier(.2,.7,.2,1)'},svg);
+
+      // range whisker (FY only)
+      if(range){
+        const xc=x+bw/2;
+        el('line',{x1:xc,y1:yv(range.lo),x2:xc,y2:yv(range.hi),
+          stroke:color,'stroke-width':2,'stroke-opacity':.9},svg);
+        [range.lo,range.hi].forEach(rv=>{
+          el('line',{x1:xc-7,y1:yv(rv),x2:xc+7,y2:yv(rv),stroke:color,'stroke-width':2,'stroke-opacity':.9},svg);
+        });
+      }
+      // value label
+      const pos=val>=0, ly=pos?yv(val)-(range?20:11):yv(val)+(range?28:24);
+      const t=el('text',{x:x+bw/2,y:ly,'text-anchor':'middle',fill:color,
+        'font-family':'Space Grotesk, sans-serif','font-weight':700,
+        'font-size':kind==='Q1 2026'?23:19,'opacity':op<1?0.92:1},svg);
+      t.textContent=(val>0?'+':'')+val+'%';
+      // kind label
+      const k=el('text',{x:x+bw/2,y:pos?ly-22:ly+16,'text-anchor':'middle',
+        fill:'#8696A8','font-size':10.5,'font-family':'IBM Plex Mono, monospace'},svg);
+      if(kind==='FY2026'){ k.setAttribute('y', pos? yv(range?range.hi:val)-10 : yv(range?range.hi:val)+16); }
+      k.textContent=kind;
+    }
+
+    // group name + tag at bottom
+    const nameY=H-mB+30;
+    const gn=el('text',{x:G.cx,y:nameY,'text-anchor':'middle',fill:'#E7ECF3',
+      'font-family':'Space Grotesk, sans-serif','font-weight':600,'font-size':15},svg);
+    gn.textContent=G.name;
+    const gt=el('text',{x:G.cx,y:nameY+17,'text-anchor':'middle',fill:'#8696A8',
+      'font-size':11,'font-family':'IBM Plex Mono, monospace'},svg);
+    gt.textContent=G.tag;
+  });
+
+  /* ============ ENGINES: horizontal bars ============ */
+  const es=document.getElementById('engines');
+  const EW=460, eL=128, eR=44, rowH=40, top=8;
+  const emin=-20, emax=130, espan=emax-emin;
+  const ex=v=>eL+((v-emin)/espan)*(EW-eL-eR);
+  const data=[
+    {name:'Mounjaro', sub:'Lilly', v:125, c:'#E5223C'},
+    {name:'Zepbound', sub:'Lilly', v:80, c:'#E5223C'},
+    {name:'Obesity care', sub:'Novo', v:22, c:'#1F5FE0'},
+    {name:'Ozempic', sub:'Novo', v:-8, c:'#1F5FE0'}
+  ];
+  // zero line
+  el('line',{x1:ex(0),y1:top-2,x2:ex(0),y2:top+data.length*rowH-6,stroke:'#C7CFD9','stroke-width':1.5},es);
+  el('text',{x:ex(0),y:top+data.length*rowH+8,'text-anchor':'middle',fill:'#9AA6B4','font-size':9,'font-family':'IBM Plex Mono, monospace'},es).textContent='0%';
+
+  data.forEach((d,i)=>{
+    const cy=top+i*rowH+rowH/2-4;
+    // label
+    const nm=el('text',{x:eL-12,y:cy-1,'text-anchor':'end',fill:'#101620','font-size':13,'font-weight':600,'font-family':'Inter, sans-serif'},es);
+    nm.textContent=d.name;
+    const sb=el('text',{x:eL-12,y:cy+12,'text-anchor':'end',fill:'#97a1ad','font-size':10,'font-family':'IBM Plex Mono, monospace'},es);
+    sb.textContent=d.sub;
+    // bar
+    const xA=ex(Math.min(0,d.v)), xB=ex(Math.max(0,d.v));
+    el('rect',{x:xA,y:cy-9,width:Math.max(2,xB-xA),height:16,rx:3,fill:d.c,'fill-opacity':d.v<0?0.55:0.9,
+      style:reduce?'':'transform-origin:'+ex(0)+'px center;animation:growx .7s '+(i*0.08)+'s forwards cubic-bezier(.2,.7,.2,1);transform:scaleX(0)'},es);
+    // value
+    const vx=d.v>=0?xB+7:xA-7, anc=d.v>=0?'start':'end';
+    const vt=el('text',{x:vx,y:cy+4,'text-anchor':anc,fill:d.c,'font-family':'Space Grotesk, sans-serif','font-weight':700,'font-size':14},es);
+    vt.textContent=(d.v>0?'+':'')+d.v+'%';
+  });
+
+  /* keyframes */
+  if(!reduce){
+    const st=document.createElement('style');
+    st.textContent='@keyframes grow{to{transform:scaleY(1)}}@keyframes growx{to{transform:scaleX(1)}}';
+    document.head.appendChild(st);
+  }
+})();
+</script>
+</body>
+</html>

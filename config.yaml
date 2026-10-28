@@ -1,0 +1,100 @@
+# PharmaDash settings. Edit freely; every value here is optional to change.
+# Lines starting with # are comments.
+
+plan: free                  # "free" = Groq free tier ($0; limits are in tokens). "paid" = pay-as-you-go ($ cap applies)
+series_name: "PharmaDash"
+issue_counter: 8            # next issue number; increases automatically after each produce
+lookback_days: 10           # how many days back discovery scans (7-14 is typical)
+topic_count: 10             # how many topic ideas discovery proposes
+article_word_target: [700, 1200]
+dashboards_per_issue: 2
+min_claims: 5                 # research must find at least this many usable facts, or the run stops instead of guessing
+disclaimer: "For information only; not investment advice."
+
+models:                     # Groq model IDs. Change here if Groq retires one (see console.groq.com/docs/models)
+  research: openai/gpt-oss-120b
+  verifier: openai/gpt-oss-120b
+  writer: openai/gpt-oss-120b
+  dashboard: openai/gpt-oss-120b
+  search: openai/gpt-oss-120b   # must support Groq "browser search" (gpt-oss models do)
+
+model_pool:                 # free models, tried in order when one hits its daily limit (each has its own 200K tokens/day)
+  - openai/gpt-oss-120b
+  - openai/gpt-oss-20b
+  - qwen/qwen3.8-27b
+
+pricing_per_million_tokens:     # USD, used only for the cost estimate; update if Groq changes prices
+  openai/gpt-oss-120b: {input: 0.15, output: 0.60}
+  openai/gpt-oss-20b: {input: 0.075, output: 0.30}
+  qwen/qwen3.8-27b: {input: 0.80, output: 4.00}
+
+usage_limits:               # hard caps per run; the run stops cleanly if reached
+  max_tokens_per_run: 400000    # used on the free plan
+  max_cost_usd: 3.0             # used if plan: paid
+  max_searches: 120
+  max_fetches: 400
+  max_turns_per_agent: 25
+
+scoring_weights:            # discovery ranking; higher = matters more
+  recency: 1.0
+  financial_magnitude: 1.5
+  relevance: 1.5
+  dashboard_ability: 1.2
+  freshness_vs_history: 1.3
+  reader_interest: 1.0
+
+themes:
+  - M&A and licensing
+  - Earnings and guidance
+  - Blockbuster drugs and patent cliff (LOE)
+  - Obesity / GLP-1
+  - Oncology
+  - AI in drug discovery
+  - FDA / regulatory and pricing policy (IRA, MFN, tariffs)
+  - China licensing
+  - Clinical readouts
+
+# Companies discovery watches. cik = SEC identifier (blank if not an SEC filer).
+# form = main annual form type: 10-K (US) or 20-F (foreign). (CIK numbers have not been checked against the live SEC yet.)
+watchlist:
+  - {name: Pfizer, ticker: PFE, cik: "0000078003", form: 10-K}
+  - {name: Merck, ticker: MRK, cik: "0000310158", form: 10-K}
+  - {name: Johnson & Johnson, ticker: JNJ, cik: "0000200406", form: 10-K}
+  - {name: AbbVie, ticker: ABBV, cik: "0001551152", form: 10-K}
+  - {name: Eli Lilly, ticker: LLY, cik: "0000059478", form: 10-K}
+  - {name: Novartis, ticker: NVS, cik: "0001114448", form: 20-F}
+  - {name: Roche, ticker: RHHBY, cik: "", form: none}
+  - {name: AstraZeneca, ticker: AZN, cik: "0000901832", form: 20-F}
+  - {name: Novo Nordisk, ticker: NVO, cik: "0000353278", form: 20-F}
+  - {name: Bristol Myers Squibb, ticker: BMY, cik: "0000014272", form: 10-K}
+  - {name: Sanofi, ticker: SNY, cik: "0001121404", form: 20-F}
+  - {name: GSK, ticker: GSK, cik: "0001131399", form: 20-F}
+  - {name: Amgen, ticker: AMGN, cik: "0000318154", form: 10-K}
+  - {name: Gilead Sciences, ticker: GILD, cik: "0000882095", form: 10-K}
+  - {name: Regeneron, ticker: REGN, cik: "0000872589", form: 10-K}
+  - {name: Moderna, ticker: MRNA, cik: "0001682852", form: 10-K}
+  - {name: Vertex, ticker: VRTX, cik: "0000875320", form: 10-K}
+  - {name: Takeda, ticker: TAK, cik: "0001395064", form: 20-F}
+  - {name: Bayer, ticker: BAYRY, cik: "", form: none}
+  - {name: Boehringer Ingelheim, ticker: "", cik: "", form: none}   # private
+  - {name: Sun Pharma, ticker: SUNPHARMA.NS, cik: "", form: none}
+
+news_sources:
+  - {name: Fierce Pharma, rss: "https://www.fiercepharma.com/rss/xml"}
+  - {name: Fierce Biotech, rss: "https://www.fiercebiotech.com/rss/xml"}
+  - {name: BioPharma Dive, rss: "https://www.biopharmadive.com/feeds/news/"}
+  - {name: Endpoints News, rss: "https://endpts.com/feed/"}
+  - {name: STAT News, rss: "https://www.statnews.com/feed/"}
+  - {name: Pharmaceutical Technology, rss: "https://www.pharmaceutical-technology.com/feed/"}
+  - {name: BioSpace, rss: "https://www.biospace.com/rss"}
+  - {name: FDA Press Releases, rss: "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml"}
+# Reuters Health has no public RSS; the agent finds it via web search.
+
+branding:                   # extracted from your sample dashboards (see src/pharmadash/templates/tokens.json)
+  page: "#E9EDF1"
+  card: "#FFFFFF"
+  panel: "#0E141B"
+  ink: "#101620"
+  fonts: {heading: "Space Grotesk", body: "Inter", mono: "IBM Plex Mono"}
+  # accent colors the dashboard builder picks from (one per dashboard)
+  accents: ["#10916B", "#1F5FE0", "#E5223C", "#7A3FF2", "#0CB5C4", "#D22A38", "#1C8C6A", "#C6893F"]

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaDash — 2026's Billion-Dollar Deals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E9EDF1; --card:#FFFFFF; --panel:#0E141B; --ink:#101620;
+    --muted:#5C6775; --faint:#8A95A3; --hair:#DBE0E7; --accent:#7A3FF2;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;padding:28px 18px 40px;}
+  .wrap{max-width:1060px;margin:0 auto}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,4.6vw,46px);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 12px;}
+  h1 .em{background:linear-gradient(transparent 62%, rgba(122,63,242,.18) 62%);padding:0 2px;}
+  .dek{font-size:clamp(14px,1.7vw,16.5px);color:var(--muted);max-width:64ch;margin:0;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 18px;}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:15px 15px 14px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+  .kpi .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:9px;min-height:24px;}
+  .kpi .val{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:28px;line-height:1;letter-spacing:-.02em;color:var(--accent)}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+
+  .panel{background:radial-gradient(900px 420px at 80% -10%, rgba(122,63,242,.12), transparent 60%),var(--panel);
+    border-radius:16px;padding:20px 18px 16px;color:#E7ECF3;position:relative;box-shadow:0 18px 40px -28px rgba(8,14,24,.7);}
+  .panel-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:6px;}
+  .ptitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FB0C4;}
+  .ptitle b{color:#E7ECF3;font-weight:600}
+  .legend{display:flex;gap:14px;flex-wrap:wrap}
+  .lg{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#C4D0DD}
+  .lg .dot{width:11px;height:11px;border-radius:50%}
+  svg.chart{width:100%;height:auto;display:block;overflow:visible}
+  .scale-note{font-size:10.5px;color:#8696A8;font-family:"IBM Plex Mono",monospace;margin-top:4px;text-align:right}
+
+  .read{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 19px;margin-top:14px}
+  .blocktitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 13px;display:flex;align-items:center;gap:8px;}
+  .blocktitle::before{content:"";width:14px;height:2px;background:var(--accent)}
+  .read ul{margin:0;padding:0;list-style:none;columns:2;column-gap:28px}
+  .read li{position:relative;padding:0 0 12px 20px;font-size:13.4px;color:#28323F;break-inside:avoid}
+  .read li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;background:var(--accent);transform:rotate(45deg);}
+  .read li b{color:var(--ink)}
+
+  footer{margin-top:18px;padding-top:15px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--faint);line-height:1.6;}
+  footer b{color:var(--muted);font-weight:600}
+  .foot-brand{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink)}
+  @media(max-width:780px){.kpis{grid-template-columns:repeat(2,1fr)}.read ul{columns:1}}
+  @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi .val{font-size:22px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">PharmaDash · M&amp;A Series · Issue 03</div>
+  <h1>Where the <span class="em">billions</span> went in 2026</h1>
+  <p class="dek">Each bubble is a major 2026 acquisition, sized by deal value and grouped by therapeutic area. The pattern is clear: oncology is the crowded lane, but the money is spreading across modalities.</p>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lab">Largest deal of 2026</div>
+      <div class="val">$11.75B</div>
+      <div class="sub">Sun Pharma → Organon (women's health)</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Most-targeted area</div>
+      <div class="val">~39%</div>
+      <div class="sub">of 2026 deal activity is oncology</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Combined value shown</div>
+      <div class="val">~$38B</div>
+      <div class="sub">across these six headline deals</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Modalities in play</div>
+      <div class="val">5+</div>
+      <div class="sub">cell therapy, radiopharma, GLP-1, biosimilars…</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-top">
+      <div class="ptitle"><b>2026's headline acquisitions</b> &nbsp;·&nbsp; bubble size = deal value</div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <svg class="chart" id="chart" viewBox="0 0 920 460" role="img"
+      aria-label="Bubble chart of major 2026 pharma acquisitions grouped into therapeutic-area lanes, with oncology holding the most deals and Sun Pharma's acquisition of Organon the largest bubble."></svg>
+    <div class="scale-note">horizontal position &amp; bubble size both scale with deal value ($B)</div>
+  </div>
+
+  <div class="read">
+    <p class="blocktitle">What the bubbles say</p>
+    <ul>
+      <li><b>Oncology is the crowded lane.</b> Three of these six deals target cancer — from Gilead's cell therapy to Lantheus's radiopharmaceuticals — mirroring oncology's ~39% share of all 2026 dealmaking.</li>
+      <li><b>The biggest check came from outside the West.</b> India's Sun Pharma bought New Jersey's Organon for $11.75B, the year's largest deal so far.</li>
+      <li><b>Buyers are spreading their bets.</b> Beyond oncology, the money is flowing into obesity (Merck/Terns), hematology (Incyte) and women's health — a broad-based cycle, not a single-therapy gold rush.</li>
+      <li><b>Modality diversity is the theme.</b> In-vivo CAR-T, BCMA cell therapy, radiopharma and GLP-1 all feature — pharma is buying platforms as much as products.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <span class="foot-brand">PharmaDash</span> &nbsp;·&nbsp; <b>Sources:</b> Company announcements and SEC filings; BioBucks and Xtalks deal trackers; Pharmaceutical Technology. Gilead/Arcellx reflects ~$7.8B implied equity value at close (incl. CVR). Lantheus/Curium ~$7B and Incyte/Star ~$2B are as announced; some values include milestones/contingent payments. Therapeutic-area labels reflect each target's lead value driver. This is a selection of headline deals, not the full 2026 deal set.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const areas={
+    'Oncology':'#E5223C','Metabolic / Obesity':'#10916B','Women\u2019s Health':'#8B5CF6','Hematology':'#E0A100'
+  };
+  const deals=[
+    {acq:'Sun Pharma', tgt:'Organon', val:11.75, area:'Women\u2019s Health'},
+    {acq:'Gilead', tgt:'Arcellx', val:7.8, area:'Oncology'},
+    {acq:'Lantheus', tgt:'Curium', val:7.0, area:'Oncology'},
+    {acq:'Merck', tgt:'Terns', val:6.7, area:'Metabolic / Obesity'},
+    {acq:'Lilly', tgt:'Orna', val:2.4, area:'Oncology'},
+    {acq:'Incyte', tgt:'Star Tx', val:2.0, area:'Hematology'}
+  ];
+
+  // legend
+  const lg=document.getElementById('legend');
+  Object.keys(areas).forEach(a=>{
+    const s=document.createElement('span'); s.className='lg';
+    s.innerHTML='<span class="dot" style="background:'+areas[a]+'"></span>'+a;
+    lg.appendChild(s);
+  });
+
+  const svg=document.getElementById('chart');
+  const W=920,H=460,mL=164,mR=40,mT=24,mB=46;
+  const innerW=W-mL-mR, innerH=H-mT-mB;
+  const VMAX=13;
+  const xv=v=>mL+(v/VMAX)*innerW;
+  const rscale=v=>9*Math.sqrt(v);
+
+  const laneNames=Object.keys(areas);
+  const laneH=innerH/laneNames.length;
+  const laneY=i=>mT+laneH*i+laneH/2;
+
+  // x gridlines ($B)
+  for(let g=0; g<=12; g+=3){
+    const x=xv(g);
+    el('line',{x1:x,y1:mT,x2:x,y2:mT+innerH,stroke:'#172230','stroke-width':1},svg);
+    el('text',{x:x,y:H-mB+24,'text-anchor':'middle',fill:'#7E8D9E','font-size':11.5,'font-family':'IBM Plex Mono, monospace'},svg).textContent='$'+g+'B';
+  }
+
+  // lane labels + separators
+  laneNames.forEach((nm,i)=>{
+    const cy=laneY(i);
+    if(i>0) el('line',{x1:mL,y1:mT+laneH*i,x2:mL+innerW,y2:mT+laneH*i,stroke:'#141E2A','stroke-width':1},svg);
+    const t=el('text',{x:mL-16,y:cy-2,'text-anchor':'end',fill:'#D5DEE8','font-size':12.5,'font-weight':700,'font-family':'Space Grotesk, sans-serif'},svg);
+    t.textContent=nm;
+    const cnt=deals.filter(d=>d.area===nm).length;
+    el('text',{x:mL-16,y:cy+13,'text-anchor':'end',fill:areas[nm],'font-size':10.5,'font-family':'IBM Plex Mono, monospace'},svg).textContent=cnt+(cnt>1?' deals':' deal');
+    // color tab
+    el('rect',{x:mL-8,y:cy-laneH/2+8,width:3,height:laneH-16,rx:1.5,fill:areas[nm],'fill-opacity':.5},svg);
+  });
+
+  // bubbles (jitter vertically within lane when crowded)
+  const byLane={};
+  deals.forEach(d=>{(byLane[d.area]=byLane[d.area]||[]).push(d);});
+  let idx=0;
+  Object.keys(byLane).forEach(area=>{
+    const arr=byLane[area].sort((a,b)=>b.val-a.val);
+    const li=laneNames.indexOf(area);
+    arr.forEach((d,k)=>{
+      const cy=laneY(li)+(arr.length>1?(k%2===0?1:-1)*Math.ceil(k/2)*22:0);
+      const cx=xv(d.val), r=rscale(d.val), col=areas[area];
+      const g=el('g',{style:reduce?'':'opacity:0;animation:fade .5s '+(idx*0.08+0.15)+'s forwards'},svg);
+      el('circle',{cx:cx,cy:cy,r:r,fill:col,'fill-opacity':0.20,stroke:col,'stroke-width':2},g);
+      el('circle',{cx:cx,cy:cy,r:3,fill:col},g);
+      // value inside/under
+      const vt=el('text',{x:cx,y:cy-r-8,'text-anchor':'middle',fill:'#EAF0F6','font-size':13,'font-weight':700,'font-family':'Space Grotesk, sans-serif'},g);
+      vt.textContent='$'+d.val+'B';
+      const at=el('text',{x:cx,y:cy-r-22,'text-anchor':'middle',fill:'#A9B7C6','font-size':11,'font-family':'IBM Plex Mono, monospace'},g);
+      at.textContent=d.acq+' \u2192 '+d.tgt;
+      idx++;
+    });
+  });
+
+  if(!reduce){
+    const st=document.createElement('style');
+    st.textContent='@keyframes fade{to{opacity:1}}';
+    document.head.appendChild(st);
+  }
+})();
+</script>
+</body>
+</html>

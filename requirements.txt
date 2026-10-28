@@ -1,0 +1,10 @@
+groq==1.7.0
+typer==0.27.3
+rich==15.0.0
+pydantic==2.14.1
+httpx==0.28.1
+feedparser==6.0.14
+PyYAML==6.0.3
+python-dotenv==1.2.4
+pytest==9.1.1
+# Optional (dashboard screenshot test): pip install playwright==1.49.0, then: playwright install chromium
