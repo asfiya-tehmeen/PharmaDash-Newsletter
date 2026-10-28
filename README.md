@@ -1,4 +1,12 @@
-# PharmaDash Agent
+# PharmaDash-Newsletter
+Pharma Dash is a bi-weekly pharma market intelligence newsletter. Every issue delivers financial performance analysis, drug-level insights, commercial news, and investor signals, all communicated through business intelligence dashboards built from public data.
+
+
+Link to Newsletter: https://www.linkedin.com/newsletters/pharmadash-7459285177010364416
+
+---
+
+## PharmaDash Agent
 
 One command that researches pharma news, checks every number, writes your newsletter article and builds your dashboards.
 
